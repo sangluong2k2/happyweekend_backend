@@ -1,6 +1,7 @@
 import express from "express"
 import mongoose from "mongoose"
 import CategoryRouter from './router/catrgories'
+import RoomRouter from './router/rooms'
 import cors from "cors"
 
 const app = express();
@@ -8,8 +9,7 @@ app.use(express.json())
 app.use(cors())
 
 app.use("/api",CategoryRouter)
-
-
+app.use("/api",RoomRouter)
 
 mongoose.connect("mongodb://localhost:27017/happyweekend")
     .then(() => console.log("connect db thanh cong"))
