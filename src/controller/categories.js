@@ -1,4 +1,5 @@
 import Category from '../models/categories'
+import Room from "../models/room"
 import slugify from 'slugify'
 
 export const getall = async (req, res) => {
@@ -35,4 +36,19 @@ export const update = async (req, res) => {
 export const remove = async (req, res) => {
     const Cate = await Category.findOneAndDelete({ _id: req.params.id })
     res.json(Cate)
+}
+
+
+export const read = async (req, res) => {
+    try {
+        const category = await Category.findOne({slug: req.params.slug}).exec()
+        // console.log(category)
+        const rooms = await Room.find({category: category}).populate('category').select('-category').exec() 
+        res.json({
+            // category,
+            rooms
+        })
+    } catch (error) {
+        
+    }
 }
