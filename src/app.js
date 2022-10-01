@@ -2,7 +2,6 @@ import express from "express"
 import mongoose from "mongoose"
 import CategoryRouter from './router/catrgories'
 import RoomRouter from './router/rooms'
-import StaffRouter from './router/staff'
 import User from './router/users'
 import cors from "cors"
 
@@ -12,7 +11,6 @@ app.use(cors())
 
 app.use("/api",CategoryRouter)
 app.use("/api",RoomRouter)
-app.use("/api",StaffRouter)
 app.use("/api",User)
 
 mongoose.connect("mongodb://localhost:27017/happyweekend")
