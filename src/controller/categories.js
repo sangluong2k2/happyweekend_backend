@@ -43,7 +43,7 @@ export const read = async (req, res) => {
     try {
         const category = await Category.findOne({slug: req.params.slug}).exec()
         // console.log(category)
-        const rooms = await Room.find({category: category}).populate('category').select('-category').exec() 
+        const rooms = await Room.find({category: category}).populate('category').select().exec() 
         res.json({
             // category,
             rooms
