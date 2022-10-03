@@ -3,6 +3,7 @@ import mongoose from "mongoose"
 import CategoryRouter from './router/catrgories'
 import RoomRouter from './router/rooms'
 import StaffRouter from './router/staff'
+import BasicRouter from './router/basic'
 import User from './router/users'
 import cors from "cors"
 
@@ -14,6 +15,7 @@ app.use("/api",CategoryRouter)
 app.use("/api",RoomRouter)
 app.use("/api",StaffRouter)
 app.use("/api",User)
+app.use("/api",BasicRouter)
 
 mongoose.connect("mongodb://localhost:27017/happyweekend")
     .then(() => console.log("connect db thanh cong"))
