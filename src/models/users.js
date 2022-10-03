@@ -17,6 +17,9 @@ const users = Schema({
     role: {
         type: Number,
         default: 0
+    },
+    status:{
+        
     }
 }, { timestamps: true });
 users.methods = {
