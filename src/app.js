@@ -3,7 +3,6 @@ import mongoose from "mongoose"
 import CategoryRouter from './router/catrgories'
 import RoomRouter from './router/rooms'
 
-import StaffRouter from './router/staff'
 import BasicRouter from './router/basic'
 import User from './router/users'
 import cors from "cors"
