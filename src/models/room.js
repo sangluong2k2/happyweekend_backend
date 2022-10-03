@@ -1,6 +1,7 @@
 import mongoose,{Schema, ObjectId} from "mongoose";
 
 
+
 const RomSchema = Schema({
     name:{
         type:String,
@@ -29,6 +30,10 @@ const RomSchema = Schema({
     category:{
         type: ObjectId,
         ref:"Category"
+    },
+    basic:{
+        type: ObjectId,
+        ref:"Basic"
     }
 }, {timestamps: true})
 
