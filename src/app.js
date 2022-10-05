@@ -2,8 +2,10 @@ import express from "express"
 import mongoose from "mongoose"
 import CategoryRouter from './router/catrgories'
 import RoomRouter from './router/rooms'
+
 import StatusRoom from './router/statusroom'
 import BasicRouter from './router/basic'
+
 import User from './router/users'
 import cors from "cors"
 
