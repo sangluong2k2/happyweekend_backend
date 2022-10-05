@@ -3,17 +3,11 @@ import mongoose,{Schema, ObjectId} from "mongoose";
 
 
 const StatusSchema = Schema({
-    timebegin:{
-        type:Date,
+    checkin:{
+        type: String,
     },
-    timeend:{
-        type:Date,
-    },
-    daybegin:{
-        type:Date,
-    },
-    dayend:{
-        type:Date,
+    checkout:{
+        type: String,
     },
     room:{
         type: ObjectId,
