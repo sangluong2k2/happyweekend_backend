@@ -26,9 +26,9 @@ export const read = async (req, res) => {
     try {
         const basic = await Basic.findOne({_id: req.params.id}).exec()
         // console.log(category)
-        const rooms = await Room.find({basic: basic}).populate('basic').select('category').exec() 
+        const rooms = await Room.find({basic: basic}).populate('basic').select().exec() 
         res.json({
-            // category,
+            basic,
             rooms
         })
     } catch (error) {
