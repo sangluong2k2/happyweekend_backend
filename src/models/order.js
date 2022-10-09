@@ -12,6 +12,12 @@ const orderSchema = Schema({
     email:{
         type:String
     },
+    statusorder:{
+        type:String
+    },
+    total:{
+        type:Number
+    },
     room:{
         type: ObjectId,
         ref:"Room"
@@ -25,5 +31,6 @@ const orderSchema = Schema({
         ref:"Statusroom"
     },
 }, {timestamps:true})
+
 
 export default mongoose.model("Order", orderSchema)
