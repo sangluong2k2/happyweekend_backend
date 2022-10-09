@@ -18,9 +18,6 @@ const users = Schema({
         type: Number,
         default: 0
     },
-    status:{
-        
-    }
 }, { timestamps: true });
 users.methods = {
     authenticate(password) {
