@@ -13,6 +13,9 @@ const StatusSchema = Schema({
         type: ObjectId,
         ref:"Room"
     },
+    totaldate:{
+        type:Number
+    }
 }, {timestamps: true})
 
 export default mongoose.model("Statusroom",StatusSchema)
