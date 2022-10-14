@@ -1,21 +1,17 @@
 import mongoose,{Schema, ObjectId} from "mongoose";
 
 
-
 const StatusSchema = Schema({
-    checkin:{
+    checkins:{
         type: String,
     },
-    checkout:{
+    checkouts:{
         type: String,
     },
     room:{
         type: ObjectId,
         ref:"Room"
     },
-    totaldate:{
-        type:Number
-    }
 }, {timestamps: true})
 
 export default mongoose.model("Statusroom",StatusSchema)

@@ -1,4 +1,5 @@
 import Room from "../models/room"
+import Basic from "../models/basic"
 import slugify from "slugify"
 
 export const creat = async (req, res)=> {
@@ -22,7 +23,7 @@ export const getAll = async (req, res)=> {
 export const getOne = async (req, res)=> {
     try {
         const room = await Room.find({ slug: req.params.slug }).exec()
-        res.json(room)
+        res.json(room[0])
     } catch (error) {
         
     }
