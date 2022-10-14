@@ -14,7 +14,7 @@ export const detailorder = async (req,res) =>{
     const order = await Order.findOne({ _id: req.params.id }).exec()
     const room = await Room.find({_id: order.room}).exec()
     const basic = await Basic.find({_id: room.basic}).exec()
-    const status = await Status.find({_id: order.status}).exec()
+    // const status = await Status.find({_id: order.status}).exec()
     res.json({
         order:{
             name:order.name,
@@ -23,7 +23,7 @@ export const detailorder = async (req,res) =>{
             total:order.total
         },
         room,
-        status,
+        // status,
         basic
     }
     )

@@ -18,6 +18,12 @@ const orderSchema = Schema({
     total:{
         type:Number
     },
+    checkins:{
+        type: String,
+    },
+    checkouts:{
+        type: String,
+    },
     room:{
         type: ObjectId,
         ref:"Room"
@@ -26,10 +32,10 @@ const orderSchema = Schema({
         type: ObjectId,
         ref:"Users"
     },
-    status:{
-        type: ObjectId,
-        ref:"Statusroom"
-    },
+    // status:{
+    //     type: ObjectId,
+    //     ref:"Statusroom"
+    // },
 }, {timestamps:true})
 
 
