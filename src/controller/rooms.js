@@ -1,5 +1,5 @@
 import Room from "../models/room"
-import Basic from "../models/basic"
+// import Basic from "../models/basic"
 import slugify from "slugify"
 
 export const creat = async (req, res)=> {
