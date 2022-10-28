@@ -1,14 +1,18 @@
 import mongoose,{Schema, ObjectId} from "mongoose";
 
 
-
-const RomSchema = Schema({
+const BlogSchema = Schema({
     name:{
         type:String,
         required:true,
         minLength: 5
     },
-    slug:{
+    title:{
+        type:String,
+        required:true
+    },
+
+    content:{
         type:String,
         required:true,
         lowercase:true,
@@ -18,19 +22,10 @@ const RomSchema = Schema({
     image:{
         type:String,
     },
-    price: {
-        type: Number,
-        required: true,
-    },
-    description:{
-        type: String,
-        required: true,
-        minLength:5
-    },
     category:{
         type: ObjectId,
-        ref:"Category"
+        ref:"CategoryBlog"
     }
 }, {timestamps: true})
 
-export default mongoose.model("Room",RomSchema)
+export default mongoose.model("Blog",BlogSchema)

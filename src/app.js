@@ -4,7 +4,7 @@ import CategoryRouter from './router/catrgories'
 import RoomRouter from './router/rooms'
 
 import StatusRoom from './router/statusroom'
-import BasicRouter from './router/basic'
+
 
 import User from './router/users'
 import OrderRouter from './router/order'
@@ -17,7 +17,7 @@ app.use(cors())
 app.use("/api",CategoryRouter)
 app.use("/api",RoomRouter)
 app.use("/api",User)
-app.use("/api",BasicRouter)
+
 app.use("/api",StatusRoom)
 app.use("/api",OrderRouter)
 
