@@ -9,6 +9,7 @@ import StatusRoom from './router/statusroom'
 import User from './router/users'
 import OrderRouter from './router/order'
 import cors from "cors"
+import FacilitiesRoom from "./router/facilities"
 
 const app = express();
 app.use(express.json())
@@ -20,6 +21,7 @@ app.use("/api",User)
 
 app.use("/api",StatusRoom)
 app.use("/api",OrderRouter)
+app.use("/api",FacilitiesRoom)
 
 
 
