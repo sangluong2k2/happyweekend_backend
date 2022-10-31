@@ -1,87 +1,106 @@
 import User from "../models/users";
-import jwt from "jsonwebtoken";
+import { createHmac } from "crypto";
 
+export const create = async (req, res) => {
+  try {
+    const {
+      _doc: { password, ...user },
+    } = await new User(req.body).save();
 
-export const signup = async (req, res) => {
-    const { email, name, password } = req.body;
-    try {
-        const existUser = await User.findOne({ email }).exec();
-        if (existUser) {
-            return res.status(400).json({
-                message: "User da ton tai"
-            })
-        } else {
-            const user = await new User({ email, name, password }).save();
-            res.json({
-                user: {
-                    _id: user._id,
-                    email: user.email,
-                    name: user.name
-                }
-            })
-        }
-    } catch (error) {
+    res.status(201).json(user);
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      message: error,
+    });
+  }
+};
 
+export const getAll = async (req, res) => {
+  try {
+    const users = await User.find().exec();
+
+    res.json(users);
+  } catch (error) {
+    res.status(404).json({
+      status: false,
+      message: error,
+    });
+  }
+};
+
+export const get = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findOne({ _id: id }).exec();
+
+    res.json(user);
+  } catch (error) {
+    res.status(404).json({
+      status: false,
+      message: error,
+    });
+  }
+};
+
+export const remove = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findOneAndDelete({ _id: id }).exec();
+
+    res.json(user);
+  } catch (error) {
+    res.status(404).json({
+      status: false,
+      message: error,
+    });
+  }
+};
+
+export const update = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { password, ...userData } = req.body;
+    const user = await User.findOneAndUpdate({ _id: id }, userData, {
+      new: true,
+    }).exec();
+
+    res.json(user);
+  } catch (error) {
+    res.status(404).json({
+      status: false,
+      message: error,
+    });
+  }
+};
+
+export const changePassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { oldPassword, newPassword } = req.body;
+    const user = await User.findOne({ _id: id }).exec();
+
+    if (!user.isAuthenticate(oldPassword)) {
+      res.status(400).json({
+        status: false,
+        message: "Mật khẩu cũ không chính xác",
+      });
+      return;
     }
-}
 
-export const signin = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email }).exec();
-        if (!user) {
-            return res.status(400).json({
-                message: "User khong ton tai"
-            })
-        }
-        if (!user.authenticate(password)) {
-            return res.status(400).json({
-                message: "Mat khau khong dung"
-            })
-        }
-        const token = jwt.sign({ _id: user._id }, "123456", { expiresIn: 60 * 60 });
-        return res.json({
-            token,
-            user: {
-                _id: user._id,
-                email: user.email,
-                name: user.name
-            }
-        })
-    } catch (error) {
+    const passwordHash = createHmac("SHA256", "Happyweekend")
+      .update(newPassword)
+      .digest("hex");
+    await User.findOneAndUpdate({ _id: id }, { password: passwordHash }).exec();
 
-    }
-
-}
-
-export const list = async (req, res) => {
-    const user = await User.find().exec();
-    res.json(user)
-}
-
-export const edituser = async (req, res) => {
-    try {
-        const user = await User.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true }).exec();
-        res.json(user)
-    } catch (error) {
-
-    }
-}
-
-export const removeuser = async (req, res) => {
-    try {
-        const remove = await User.findOneAndDelete({ _id: req.params.id }).exec()
-        res.json(remove)
-    } catch (error) {
-
-    }
-}
-
-export const findone = async (req, res) => {
-    try {
-        const getone = await User.findOne({ _id: req.params.id }).exec()
-        res.json(getone)
-    } catch (error) {
-
-    }
-}
+    res.json({
+      status: true,
+      message: "Cập nhật mật khẩu thành công",
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: false,
+      message: error,
+    });
+  }
+};

@@ -38,3 +38,38 @@ export const listUser = async (req,res) =>{
     const list = await Order.find({user: req.params.user}).exec()
     res.json(list)
 }
+
+export const sendMail = async (req,res) =>{
+    const { email } =req.body
+    const {name} = req.body
+    const {room} = req.body
+    const {checkins} = req.body
+    const nodemailer = require('nodemailer');
+      // create reusable transporter object using the default SMTP transport
+      const transporter = nodemailer.createTransport({
+   service:"Gmail",
+    auth: {
+      user: "ngankien1111@gmail.com", // generated ethereal user
+      pass: "wlwfgvzqrekfpqwj", // generated ethereal password
+    },
+  });
+  await transporter.sendMail({
+    from: "ngankien1111@gmail.com", // sender address
+    to: `${email}`, // list of receivers
+    subject: "Hello ✔", // Subject line
+    text: `${name} đã đặt phòng ${room} thành công trong khoảng thời gian ${checkins} !`, // plain text body
+    html: `<b>${name} đã đặt phòng ${room} thành công trong khoảng thời gian ${checkins} !</b>`, // html body
+  },
+  (err)=>{
+    if(err){
+        return res.json({
+            message:"lỗi",
+            err,
+        });
+    }
+    return res.json({
+        message:`đã gửi mail thành công cho tài khoản ${email}`,
+    });
+  }
+  );
+}

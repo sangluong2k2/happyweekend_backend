@@ -1,14 +1,21 @@
-const {Router} = require('express')
-const { signup, signin, list, edituser, removeuser, findone } = require('../controller/users')
+const { Router } = require("express");
+import {
+  create,
+  getAll,
+  get,
+  remove,
+  update,
+  changePassword,
+} from "../controller/users";
+import { isAdmin, isAuth, requireSignin } from "../middlewares/checkAuth";
 
-const router = Router()
+const router = Router();
 
+router.post("/users", requireSignin, isAuth, isAdmin, create);
+router.get("/users", getAll);
+router.get("/users/:id", requireSignin, isAuth, isAdmin, get);
+router.put("/users/changepassword/:id", requireSignin, isAuth, changePassword);
+router.put("/users/:id", requireSignin, isAuth, isAdmin, update);
+router.delete("/users/:id", requireSignin, isAuth, isAdmin, remove);
 
-router.post("/signup",signup)
-router.post("/signin",signin)
-router.get("/users/:id",findone)
-router.get("/users",list)
-router.delete("/users/:id/delete", removeuser)
-router.put("/users/:id/edit", edituser)
-
-module.exports = router
+module.exports = router;
