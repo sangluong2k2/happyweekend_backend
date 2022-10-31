@@ -30,6 +30,10 @@ const RomSchema = Schema({
     status: {
         type: Number
     },
+    coc: {
+        type: Boolean,
+        default: false
+    },
     category:{
         type: ObjectId,
         ref:"Category"
