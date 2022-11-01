@@ -27,9 +27,6 @@ const RomSchema = Schema({
         required: true,
         minLength:5
     },
-    status: {
-        type: Number
-    },
     coc: {
         type: Boolean,
         default: false
@@ -38,9 +35,9 @@ const RomSchema = Schema({
         type: ObjectId,
         ref:"Category"
     },
-    facilities:{
+    date: {
         type: ObjectId,
-        ref:"facilities"
+        ref: "dateBooked"
     }
 }, {timestamps: true})
 
