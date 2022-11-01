@@ -33,10 +33,6 @@ const RomSchema = Schema({
     category:{
         type: ObjectId,
         ref:"Category"
-    },
-    facilities:{
-        type: ObjectId,
-        ref:"facilities"
     }
 }, {timestamps: true})
 
