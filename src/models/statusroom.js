@@ -1,12 +1,11 @@
 import mongoose,{Schema, ObjectId} from "mongoose";
 
 
-
 const StatusSchema = Schema({
-    checkin:{
+    checkins:{
         type: String,
     },
-    checkout:{
+    checkouts:{
         type: String,
     },
     room:{

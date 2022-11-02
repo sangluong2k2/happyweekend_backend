@@ -6,8 +6,8 @@ export const getall = async (req,res) =>{
     res.json(list)
 }
 export const creat = async (req,res) =>{
-    const add = await new StatusRoom(req.body).save()
-    res.json(add)
+    const Add = await new StatusRoom(req.body).save()
+    res.json(Add)
 }
 export const update = async (req,res) =>{
     const edit = await StatusRoom.findOneAndUpdate({_id:req.params.id}, req.body,{new:true}).exec()

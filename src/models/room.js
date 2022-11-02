@@ -27,13 +27,12 @@ const RomSchema = Schema({
         required: true,
         minLength:5
     },
+    status: {
+        type: Number
+    },
     category:{
         type: ObjectId,
         ref:"Category"
-    },
-    basic:{
-        type: ObjectId,
-        ref:"Basic"
     }
 }, {timestamps: true})
 
