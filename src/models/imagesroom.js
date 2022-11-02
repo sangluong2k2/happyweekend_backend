@@ -1,9 +1,13 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, {Schema, ObjectId} from "mongoose";
 
 const ImageSchema = Schema({
     image:{
-        type:String,
+        type:[],
         required:true
+    },
+    room: {
+        type: ObjectId,
+        ref: "room"
     }
 },{timestamps:true})
 
