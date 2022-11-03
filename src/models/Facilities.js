@@ -1,4 +1,5 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, ObjectId } from "mongoose";
+import room from "./room";
 
 const FacilitiesSchema  = Schema({
     name:{
@@ -7,6 +8,10 @@ const FacilitiesSchema  = Schema({
     },
     image:{
         type:String
+    },
+    room: {
+        type: ObjectId,
+        ref: room
     }
 },{timestamps:true})
 export default mongoose.model("Facilities", FacilitiesSchema)
