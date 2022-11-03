@@ -16,7 +16,7 @@ const RomSchema = Schema({
         index:true
     },
     image:{
-        type:String,
+        type: {},
     },
     price: {
         type: Number,
@@ -27,12 +27,17 @@ const RomSchema = Schema({
         required: true,
         minLength:5
     },
-    status: {
-        type: Number
+    coc: {
+        type: Boolean,
+        default: false
     },
     category:{
         type: ObjectId,
         ref:"Category"
+    },
+    date: {
+        type: ObjectId,
+        ref: "dateBooked"
     }
 }, {timestamps: true})
 
