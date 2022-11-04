@@ -1,53 +1,48 @@
-import CategoryBlog from '../models/categories_blog'
-import Blog from "../models/blog"
-import slugify from 'slugify'
+import CategoryBlog from "../models/categories_blog"
+import slugify from "slugify"
 
-export const getall = async (req, res) => {
-    const list = await CategoryBlog.find().exec()
-    res.json(list)
-}
-
-export const getone = async (req, res) => {
-    const Cate = await CategoryBlog.findOne({ id: req.params.id })
-    res.json(Cate)
-}
-
-export const creat = async (req, res) => {
-    req.body.id = slugify(req.body.name)
-    try {
+export const create = async (req,res) => {
+    req.body.slug = slugify(req.body.name)
+    try{
         const add = await CategoryBlog(req.body).save()
-        res.json(add)
-    } catch (error) {
+        res.json(add) 
+    }catch(error){
 
     }
 }
 
-export const update = async (req, res) => {
-    req.body.id = slugify(req.body.name)
+export const remove = async (req,res) => {
     try {
-        const UpdateCate = await CategoryBlog.findByIdAndUpdate({ _id: req.params.id },req.body,{new:true})
-        res.json(UpdateCate)
+        const deleteCategoryBlog = await CategoryBlog.findOneAndDelete({_id:req.params.id}).exec()
+        res.json(deleteCategoryBlog)
     } catch (error) {
-
+        
     }
-
 }
 
-export const remove = async (req, res) => {
-    const Cate = await CategoryBlog.findOneAndDelete({ _id: req.params.id })
-    res.json(Cate)
-}
-
-
-export const read = async (req, res) => {
+export const update = async (req,res) => {
+    req.body.slug = slugify(req.body.name)
     try {
-        const categoryBlog = await CategoryBlog.findOne({id: req.params.id}).exec()
-        // console.log(categoryBlog)
-        const rooms = await Blog.find({categoryBlog: categoryBlog}).populate('categoryBlog').select().exec() 
-        res.json({
-            // categoryBlog,
-            rooms
-        })
+        const updateCategoryBlog = await CategoryBlog.findOneAndUpdate({_id:req.params.id},req.body,{new:true}).exec()
+        res.json(updateCategoryBlog)
+    } catch (error) {
+        
+    }
+}
+
+export const getAll = async (req, res)=> {
+    try {
+        const getCategoryBlog = await CategoryBlog.find().exec()
+        res.json(getCategoryBlog)
+    } catch (error) {
+        
+    }
+}
+
+export const getOne = async (req, res)=> {
+    try {
+        const CategoryBlog = await CategoryBlog.find({ slug: req.params.slug }).exec()
+        res.json(CategoryBlog[0])
     } catch (error) {
         
     }
