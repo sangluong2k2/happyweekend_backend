@@ -16,7 +16,7 @@ const RomSchema = Schema({
         index:true
     },
     image:{
-        type: {},
+        type: [],
     },
     price: {
         type: Number,
