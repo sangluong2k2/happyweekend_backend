@@ -29,9 +29,12 @@ export const update = async (req,res) => {
 }
 
 export const getall = async (req,res) => {
+    console.log(req.query);
     try {
-        const list = await Image.find().exec()
-        req.json(list)
+        const list = await Image.find({
+            room: {$eq: req.query.room}
+        }).exec()
+        res.json(list)
     } catch (error) {
         
     }
@@ -40,7 +43,7 @@ export const getall = async (req,res) => {
 export const getOne = async (req, res) => {
     try {
         const image = await Image.find({_id:req.params.id}).exec()
-        req.json(image)
+        res.json(image)
     } catch (error) {
         
     }

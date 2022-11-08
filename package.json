@@ -15,7 +15,7 @@
     "express-jwt": "^7.7.5",
     "express-jwt-token": "^0.1.5",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.6.0",
+    "mongoose": "^6.7.1",
     "nodemailer": "^6.8.0",
     "slugify": "^1.6.5"
   }

@@ -40,3 +40,22 @@ const PORT = 4000;
 app.listen(PORT, () => {
   console.log(`Server running port ${PORT}`);
 });
+
+
+// const URL = 'mongodb+srv://admin:sang2002@happyweekend.e5gnq2j.mongodb.net/?retryWrites=true&w=majority'
+
+// const connectDB = async () => {
+//   try {
+//     await mongoose.connect(
+//       URL,
+//       { useNewUrlParser: true, useUnifiedTopology: true }
+//     )
+//     console.log('Connected to mongoDB')
+//   } catch (error) {
+//     console.log(error)
+//     process.exit(1)
+//   }
+// }
+
+// connectDB()
+
