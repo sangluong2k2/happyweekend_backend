@@ -55,8 +55,8 @@ export const search = async (req, res) => {
     console.log(req.query);
     try {
         const rooms = await dateBooked.find({
-            dateFrom: { $gte: "Wed Oct 16 2022 00:00:00 GMT+0700 (Indochina Time)" },
-            dateTo: { $lte: "Wed Oct 31 2022 00:00:00 GMT+0700 (Indochina Time)" }
+            dateFrom: { $eq: "Wed Oct 16 2022 00:00:00 GMT+0700 (Indochina Time)" },
+            dateTo: { $eq: "Wed Oct 31 2022 00:00:00 GMT+0700 (Indochina Time)" }
         }).exec()
         res.json(rooms)
     } catch (error) {
