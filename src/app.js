@@ -42,20 +42,19 @@ app.listen(PORT, () => {
 });
 
 
+
+
+
 // const URL = 'mongodb+srv://admin:sang2002@happyweekend.e5gnq2j.mongodb.net/?retryWrites=true&w=majority'
 
-// const connectDB = async () => {
-//   try {
-//     await mongoose.connect(
-//       URL,
-//       { useNewUrlParser: true, useUnifiedTopology: true }
-//     )
-//     console.log('Connected to mongoDB')
-//   } catch (error) {
-//     console.log(error)
-//     process.exit(1)
-//   }
-// }
+// mongoose
+//   .connect(URL)
+//   .then(() => console.log("DB Connected successfully"))
+//   .catch((error) => console.log("DB not connected ", error));
 
-// connectDB()
+//   readdirSync("./src/router").forEach((route) => {
+//     // console.log(route);
+//     app.use("/api", require(`./router/${route}`));
+//   });
 
+//   app.listen(4000, () => console.log("server is listening port: ", 4000));

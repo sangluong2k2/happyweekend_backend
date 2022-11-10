@@ -18,7 +18,7 @@ export const getAll = async (req, res) => {
         res.json(room)
 
     } catch (error) {
-
+        console.log(error);
     }
 }
 
