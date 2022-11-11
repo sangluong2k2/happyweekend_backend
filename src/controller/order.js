@@ -20,7 +20,10 @@ export const detailorder = async (req,res) =>{
             name:order.name,
             phone:order.phone,
             email:order.email,
-            total:order.total
+            total:order.total,
+            checkins:order.checkins,
+            checkouts:order.checkouts,
+            statusorder:order.statusorder
         },
         room,
         // status,
