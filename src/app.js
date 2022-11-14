@@ -35,7 +35,7 @@ mongoose
   .then(() => console.log("connect db thanh cong"))
   .catch((error) => console.log(error));
 
-const PORT = 4000;
+const PORT = process.env.PORT ||  4000;
 
 app.listen(PORT, () => {
   console.log(`Server running port ${PORT}`);
