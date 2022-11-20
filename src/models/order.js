@@ -32,10 +32,10 @@ const orderSchema = Schema({
         type: ObjectId,
         ref:"Users"
     },
-    // status:{
-    //     type: ObjectId,
-    //     ref:"DateBooked"
-    // },
+    status:{
+        type: ObjectId,
+        ref:"DateBooked"
+    },
 }, {timestamps:true})
 
 
