@@ -26,35 +26,35 @@ app.use(cors());
 // app.use("/api", )
 
 // c2
-readdirSync("./src/router").forEach((route) => {
-  app.use("/api", require(`./router/${route}`));
-});
-
-mongoose
-  .connect("mongodb://localhost:27017/happyweekend")
-  .then(() => console.log("connect db thanh cong"))
-  .catch((error) => console.log(error));
-
-const PORT = 4000;
-
-app.listen(PORT, () => {
-  console.log(`Server running port ${PORT}`);
-});
-
-
-
-
-
-// const URL = 'mongodb+srv://admin:sang2002@happyweekend.e5gnq2j.mongodb.net/?retryWrites=true&w=majority'
+// readdirSync("./src/router").forEach((route) => {
+//   app.use("/api", require(`./router/${route}`));
+// });
 
 // mongoose
-//   .connect(URL)
-//   .then(() => console.log("DB Connected successfully"))
-//   .catch((error) => console.log("DB not connected ", error));
+//   .connect("mongodb://localhost:27017/happyweekend")
+//   .then(() => console.log("connect db thanh cong"))
+//   .catch((error) => console.log(error));
 
-//   readdirSync("./src/router").forEach((route) => {
-//     // console.log(route);
-//     app.use("/api", require(`./router/${route}`));
-//   });
+// const PORT = 4000;
 
-//   app.listen(4000, () => console.log("server is listening port: ", 4000));
+// app.listen(PORT, () => {
+//   console.log(`Server running port ${PORT}`);
+// });
+
+
+
+
+
+const URL = 'mongodb+srv://admin:sang2002@happyweekend.e5gnq2j.mongodb.net/?retryWrites=true&w=majority'
+
+mongoose
+  .connect(URL)
+  .then(() => console.log("DB Connected successfully"))
+  .catch((error) => console.log("DB not connected ", error));
+
+  readdirSync("./src/router").forEach((route) => {
+    // console.log(route);
+    app.use("/api", require(`./router/${route}`));
+  });
+
+  app.listen(4000, () => console.log("server is listening port: ", 4000));
