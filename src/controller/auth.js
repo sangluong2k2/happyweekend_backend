@@ -52,6 +52,8 @@ export const signin = async (req, res) => {
         role: user.role,
         avatar: user.avatar,
         phone: user.phone,
+        address: user.address,
+        gender:user.gender
       },
     });
   } catch (error) {
