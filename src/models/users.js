@@ -24,6 +24,14 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: process.env.DEFAULT_IMG,
     },
+    address:{
+      type:String,
+      require:true
+    },
+    gender:{
+      type:String,
+      require:true
+    },
     role: {
       default: 0,
       type: Number,
