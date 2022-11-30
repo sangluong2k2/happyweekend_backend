@@ -38,6 +38,10 @@ const RomSchema = Schema({
     date: {
         type: ObjectId,
         ref: "dateBooked"
+    },
+    facilities:{
+        type: ObjectId,
+        ref: "Facilities"
     }
 }, {timestamps: true})
 
