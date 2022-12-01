@@ -7,10 +7,14 @@ const orderSchema = Schema({
         trim:true,
     },
     phone:{
-        type:Number
+        type:Number,
+        required:true,
+        trim:true,
     },
     email:{
-        type:String
+        type:String,
+        required:true,
+        trim:true,
     },
     statusorder:{
         type:String
