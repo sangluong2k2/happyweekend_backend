@@ -1,4 +1,5 @@
 import Room from "../models/room"
+import Comment from "../models/comments"
 import slugify from "slugify"
 import imagesroom from "../models/imagesroom"
 import dateBooked from "../models/dateBooked"
@@ -65,3 +66,14 @@ export const search = async (req, res) => {
     }
 }
 
+export const read = async (req,res) => {
+    try {
+        const room = await Room.findOne({slug: req.params.slug}).exec();
+        const comments = await Comment.find({room: room}).populate('room').select('-room').exec()
+        res.json({
+            comments
+        });
+    } catch (error) {
+        
+    }
+}
