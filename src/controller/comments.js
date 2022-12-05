@@ -1,6 +1,6 @@
+import { json } from "express";
 import Comment from "../models/comments"
-import Room from "../models/room"
-
+ 
 
 export const create = async (req,res) => {
     try{
@@ -46,5 +46,12 @@ export const getOne = async (req, res)=> {
     } catch (error) {
 
     }
+}
+
+export const listDetail = async (req,res) =>{
+    const list = await Comment.find({room: req.params.room}).populate('user').select().exec()
+    res.json( 
+           list
+        )
 }
 
