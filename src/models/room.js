@@ -18,10 +18,11 @@ const RomSchema = Schema({
     image:{
         type: [],
     },
-    price: {
-        type: Number,
-        // required: true,
-    },
+    price: [{
+        brand:Number,
+        title:String,
+        value:Number
+    }],
     description:{
         type: String,
         // required: true,
