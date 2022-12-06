@@ -32,7 +32,7 @@ export const update = async (req,res) => {
 
 export const getAll = async (req, res)=> {
     try {
-        const getComment = await Comment.find().exec()
+        const getComment = await Comment.find().populate(["room","user"]).exec()
         res.json(getComment)
     } catch (error) {
         
@@ -42,7 +42,7 @@ export const getAll = async (req, res)=> {
 export const getOne = async (req, res)=> {
     try {
         const Comment = await Comment.find({ _id: req.params.id }).exec()
-        res.json(Comment[0])
+        res.json(Comment)
     } catch (error) {
 
     }
