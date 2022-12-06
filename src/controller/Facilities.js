@@ -41,8 +41,8 @@ export const getAll = async (req, res)=> {
 
 export const getOne = async (req, res)=> {
     try {
-        const Faci = await Faci.find({ slug: req.params.slug }).exec()
-        res.json(Faci[0])
+        // const Faci = await Faci.find({ slug: req.params.slug }).exec()
+        // res.json(Faci[0])
         const abc = await Faci.find({ room: req.params.room }).populate('room').select('-room').exec()
         res.json(abc)
     } catch (error) {

@@ -4,7 +4,7 @@ import Room from '../models/room'
 // import Basic from '../models/basic'
 import Status from '../models/statusroom'
 export const getall = async (req, res) => {
-    const list = await Order.find().exec()
+    const list = await Order.find().populate('room').select().exec()
     res.json(list)
 }
 export const orderroom = async (req, res) => {
