@@ -25,7 +25,7 @@ export const getAll = async (req, res) => {
 
 export const getOne = async (req, res) => {
     try {
-        const room = await Room.find({ slug: req.params.slug }).exec()
+        const room = await Room.find({ slug: req.params.slug }).populate('category').exec()
         res.json(room[0])
     } catch (error) {
 

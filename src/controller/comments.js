@@ -31,8 +31,9 @@ export const update = async (req,res) => {
 }
 
 export const getAll = async (req, res)=> {
+    
     try {
-        const getComment = await Comment.find().populate(["room","user"]).exec()
+        const getComment = await Comment.find().sort({createdAt: -1}).populate(["room","user"]).exec()
         res.json(getComment)
     } catch (error) {
         
@@ -49,7 +50,7 @@ export const getOne = async (req, res)=> {
 }
 
 export const listDetail = async (req,res) =>{
-    const list = await Comment.find({room: req.params.room}).populate('user').select().exec()
+    const list = await Comment.find({room: req.params.room}).sort({createdAt: -1}).populate('user').select().exec()
     res.json( 
            list
         )
