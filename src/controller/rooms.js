@@ -61,19 +61,16 @@ export const search = async (req, res) => {
             dateFrom: { $gte: checkIn },
             dateTo: { $lte: checkOut }
         }).exec()
+        // console.log(bookedRooms);
         if (!(checkOut === 'null')) {
-            let bookedRoomId = bookedRooms.map((item) => JSON.stringify(item.room));
+            let bookedRoomId = bookedRooms.map((item) => item.room);
             const enqBookRoomId = _.uniq(bookedRoomId);
-            rooms.forEach((item, index) => {
+            rooms.map((item, index) => {
                 enqBookRoomId.map((idItem) => {
-                    if (JSON.stringify(item._id) == idItem) {
+                    if (JSON.stringify(item._id) == JSON.stringify(idItem)) {
                         rooms.splice(index, 1);
                     }
                 })
-                // var evens = _.remove([...rooms], function (itemId) {
-                //     return item == itemId;
-                // });
-                // console.log(evens)
                 if (index === rooms.length - 1) {
                     res.json(rooms)
                 }
