@@ -2,7 +2,6 @@ import Room from "../models/room"
 import slugify from "slugify"
 import imagesroom from "../models/imagesroom"
 import dateBooked from "../models/dateBooked"
-import _ from "lodash"
 
 export const creat = async (req, res) => {
     req.body.slug = slugify(req.body.name)
@@ -56,10 +55,9 @@ export const search = async (req, res) => {
     const checkIn = req.query.dateFrom;
     const checkOut = req.query.dateTo;
     try {
-        const rooms = await Room.find().exec();
-        const bookedRooms = await dateBooked.find({
-            dateFrom: { $gte: checkIn },
-            dateTo: { $lte: checkOut }
+        const rooms = await dateBooked.find({
+            dateFrom: { $eq: checkIn },
+            dateTo: { $eq: checkOut }
         }).exec()
         // console.log(bookedRooms);
         if (!(checkOut === 'null')) {
@@ -79,6 +77,7 @@ export const search = async (req, res) => {
         else {
             res.json(rooms)
         }
+        res.json(rooms)
     } catch (error) {
 
     }

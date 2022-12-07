@@ -1,5 +1,6 @@
 import Order from '../models/order'
 import Room from '../models/room'
+
 // import Basic from '../models/basic'
 import Status from '../models/statusroom'
 export const getall = async (req, res) => {

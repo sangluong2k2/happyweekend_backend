@@ -6,7 +6,7 @@ const router = Router()
 
 
 router.get("/facilities",getAll)
-router.get("/facilities/:slug",getOne)
+router.get("/facilities/:room",getOne)
 router.post("/facilities",create)
 router.delete("/facilities/:id/delete", remove)
 router.put("/facilities/:id/edit", update)
