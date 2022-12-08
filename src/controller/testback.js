@@ -20,7 +20,7 @@ function sortObject(obj) {
   export const CreatePayment = async (req, res) => {
     // try {
     var ipAddr = '127.0.0.1';
-    const total="1000000";
+    const {total}=req.body;
     // var total = req.body.amount;
     
   
