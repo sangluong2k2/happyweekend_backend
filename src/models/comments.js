@@ -12,6 +12,10 @@ const comments = Schema({
     room:{
         type: ObjectId,
         ref:"Room"
+    },
+    star:{
+        type: String,
+        required: true
     }
 }, {timestamps:true})
 
