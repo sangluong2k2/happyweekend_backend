@@ -3,6 +3,7 @@ import Comment from "../models/comments"
 import slugify from "slugify"
 import imagesroom from "../models/imagesroom"
 import dateBooked from "../models/dateBooked"
+import room from "../models/room"
 
 export const creat = async (req, res) => {
     req.body.slug = slugify(req.body.name)
@@ -56,13 +57,33 @@ export const search = async (req, res) => {
     const checkIn = req.query.dateFrom;
     const checkOut = req.query.dateTo;
     try {
-        const rooms = await dateBooked.find({
+        const bookedRooms = await dateBooked.find({
             dateFrom: { $eq: checkIn },
             dateTo: { $eq: checkOut }
         }).exec()
+        // console.log(bookedRooms);
+        const rooms = await Room.find().exec()
+        if (!(checkOut === 'null')) {
+            let bookedRoomId = bookedRooms.map((item) => item.room);
+            const enqBookRoomId = _.uniq(bookedRoomId);
+            rooms.map((item, index) => {
+                enqBookRoomId.map((idItem) => {
+                    if (JSON.stringify(item._id) == JSON.stringify(idItem)) {
+                        rooms.splice(index, 1);
+                    }
+                })
+                if (index === rooms.length - 1) {
+                    res.json(rooms)
+                }
+            })
+        }
+        else {
+            res.json(rooms)
+        }
         res.json(rooms)
     } catch (error) {
-
+        console.log(error);
+        res.status(400).json([])
     }
 }
 
