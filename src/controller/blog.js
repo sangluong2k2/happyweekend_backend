@@ -32,7 +32,7 @@ export const update = async (req,res) => {
 
 export const getAll = async (req, res)=> {
     try {
-        const getBlog = await Blog.find().populate("CategoryBlog").exec()
+        const getBlog = await Blog.find().populate("category").exec()
         res.json(getBlog)
     } catch (error) {
         
@@ -41,7 +41,7 @@ export const getAll = async (req, res)=> {
 
 export const getOne = async (req, res)=> {
     try {
-        const blog = await Blog.find({ slug: req.params.slug }).populate("CategoryBlog").exec()
+        const blog = await Blog.find({ slug: req.params.slug }).populate("category").exec()
         res.json(blog[0])
     } catch (error) {
         
