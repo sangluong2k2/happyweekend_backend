@@ -28,7 +28,7 @@ function sortObject(obj) {
     const vnp_TmnCode = 'J17L9NNN';
     const vnp_HashSecret = 'VAMHNWPTSMHQARDWIKAWVMTOLXQHCCGO';
     const vnp_Url = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
-    const vnp_ReturnUrl = 'http://localhost:3000/';
+    const vnp_ReturnUrl = 'http://localhost:4000/api/vnpay_return';
     var tmnCode = vnp_TmnCode;
     var secretKey = vnp_HashSecret;
     var vnpUrl = vnp_Url;
@@ -86,4 +86,41 @@ function sortObject(obj) {
     //     message: 'Tạo giao dịch không thành công!',
     //   });
     // }
+  };
+
+    export const RertunPayment = async (req, res) => {
+    // logic dùng window.location.search để lấy full param +&idUser=...
+    //Fe truyền xuống đầy đủ thông tin trên URL dc trả về và idUser lấy các thông tin để lưu bill
+    var vnp_Params = req.query;
+    console.log(vnp_Params);
+    var secureHash = vnp_Params["vnp_SecureHash"];
+  
+    delete vnp_Params["vnp_SecureHash"];
+    delete vnp_Params["vnp_SecureHashType"];
+  
+    vnp_Params = sortObject(vnp_Params);
+    console.log("vnp_Params", vnp_Params);
+  
+    //   var config = require("config");
+    //   var tmnCode = "71JUNFKK";
+    var secretKey = "VAMHNWPTSMHQARDWIKAWVMTOLXQHCCGO";
+  
+    //   var querystring = require("qs");
+    var signData = querystring.stringify(vnp_Params, { encode: false });
+    //   var crypto = require("crypto");
+    var hmac = crypto.createHmac("sha512", secretKey);
+    var signed = hmac.update(new Buffer(signData, "utf-8")).digest("hex");
+    console.log(123, signed);
+    console.log("secureHash", secureHash);
+    if (secureHash === signed) {
+      //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
+      console.log(1, vnp_Params["vnp_ResponseCode"]);
+      return res.status(200).json({
+        message: vnp_Params,
+      });
+    
+    } else {
+      console.log(2);
+      res.render("success", { code: "97" });
+    }
   };
