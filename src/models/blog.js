@@ -20,12 +20,20 @@ const BlogSchema = Schema({
         unique:true,
         index:true
     },
+    user:{
+        type: ObjectId,
+        ref: "User"
+    },
     image:{
         type:String,
     },
     category:{
         type: ObjectId,
         ref:"CategoryBlog"
+    },
+    desc:{
+        type: String,
+        required:true
     }
 }, {timestamps: true})
 
