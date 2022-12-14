@@ -20,7 +20,14 @@ function sortObject(obj) {
   export const CreatePayment = async (req, res) => {
     // try {
     var ipAddr = '127.0.0.1';
-    const total="1000000";
+    const {total}=req.body;
+    const {name}=req.body;
+    const {phone}=req.body;
+    const {email}=req.body;
+    const {checkins}=req.body;
+    const {checkouts}=req.body;
+    const {statusorder}=req.body;
+  
     // var total = req.body.amount;
     
   
@@ -28,7 +35,7 @@ function sortObject(obj) {
     const vnp_TmnCode = 'J17L9NNN';
     const vnp_HashSecret = 'VAMHNWPTSMHQARDWIKAWVMTOLXQHCCGO';
     const vnp_Url = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
-    const vnp_ReturnUrl = 'http://localhost:4000/api/vnpay_return';
+    const vnp_ReturnUrl = 'http://localhost:3000/profile/order/bill';
     var tmnCode = vnp_TmnCode;
     var secretKey = vnp_HashSecret;
     var vnpUrl = vnp_Url;
@@ -53,11 +60,13 @@ function sortObject(obj) {
     vnp_Params['vnp_Version'] = '2.1.0';
     vnp_Params['vnp_Command'] = 'pay';
     vnp_Params['vnp_TmnCode'] = tmnCode;
+    vnp_Params['vnp_OrderInfo'] = "Thanh toan hoa don";
+  
     // vnp_Params['vnp_Merchant'] = ''
     vnp_Params['vnp_Locale'] = locale;
     vnp_Params['vnp_CurrCode'] = currCode;
     vnp_Params['vnp_TxnRef'] = orderId;
-    vnp_Params['vnp_OrderInfo'] = orderInfo;
+    // vnp_Params['vnp_OrderInfo'] = orderInfo;
     vnp_Params['vnp_OrderType'] = orderType;
     vnp_Params['vnp_Amount'] = total * 100;
     vnp_Params['vnp_ReturnUrl'] = returnUrl;
@@ -89,6 +98,12 @@ function sortObject(obj) {
   };
 
     export const RertunPayment = async (req, res) => {
+      const {name}=req.body;
+      const {phone}=req.body;
+      const {email}=req.body;
+      const {checkins}=req.body;
+      const {checkouts}=req.body;
+      const {statusorder}=req.body;
     // logic dùng window.location.search để lấy full param +&idUser=...
     //Fe truyền xuống đầy đủ thông tin trên URL dc trả về và idUser lấy các thông tin để lưu bill
     var vnp_Params = req.query;
@@ -116,7 +131,9 @@ function sortObject(obj) {
       //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
       console.log(1, vnp_Params["vnp_ResponseCode"]);
       return res.status(200).json({
-        message: vnp_Params,
+        message: vnp_Params
+        
+
       });
     
     } else {
