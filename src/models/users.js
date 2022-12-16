@@ -28,6 +28,12 @@ const UserSchema = new mongoose.Schema(
       default: 0,
       type: Number,
     },
+    gender:{
+      type:String
+    },
+    address:{
+      type:String
+    }
   },
   { timestamps: true }
 );

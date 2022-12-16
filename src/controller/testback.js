@@ -20,27 +20,30 @@ function sortObject(obj) {
   export const CreatePayment = async (req, res) => {
     // try {
     var ipAddr = '127.0.0.1';
-  
+    const {total}=req.body;
+    // var total = req.body.amount;
     
   
-    const vnp_TmnCode = 'NWEMBZUX';
-    const vnp_HashSecret = 'VCRGNIKYILGNQDELWDUTKHRVWZWQMZEO';
+    
+    const vnp_TmnCode = 'J17L9NNN';
+    const vnp_HashSecret = 'VAMHNWPTSMHQARDWIKAWVMTOLXQHCCGO';
     const vnp_Url = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
-    const vnp_ReturnUrl = 'http://localhost:4000/order/vnpay_return';
+    const vnp_ReturnUrl = 'http://localhost:3000/';
     var tmnCode = vnp_TmnCode;
     var secretKey = vnp_HashSecret;
     var vnpUrl = vnp_Url;
     var returnUrl = vnp_ReturnUrl;
   
     var date = new Date();
-  
+    
     var createDate = dateFormat(date, 'yyyymmddHHmmss');
     var orderId = dateFormat(date, 'HHmmss');
+   
     var amount = req.body.amount;
-    var bankCode = req.body.bankCode;
+    var bankCode = "NCB";
   
-    var orderInfo = req.body.orderDescription;
-    var orderType = req.body.orderType;
+    var orderInfo = req.body.name;
+    var orderType = "billpayment";
     var locale = req.body.language;
     if (locale === null || locale === '') {
       locale = 'vn';
@@ -56,13 +59,13 @@ function sortObject(obj) {
     vnp_Params['vnp_TxnRef'] = orderId;
     vnp_Params['vnp_OrderInfo'] = orderInfo;
     vnp_Params['vnp_OrderType'] = orderType;
-    vnp_Params['vnp_Amount'] = amount * 100;
+    vnp_Params['vnp_Amount'] = total * 100;
     vnp_Params['vnp_ReturnUrl'] = returnUrl;
     vnp_Params['vnp_IpAddr'] = ipAddr;
     vnp_Params['vnp_CreateDate'] = createDate;
-    if (bankCode !== null && bankCode !== '') {
-      vnp_Params['vnp_BankCode'] = bankCode;
-    }
+    // if (bankCode !== null && bankCode !== '') {
+      vnp_Params['vnp_BankCode'] = bankCode ;
+    // }
   
     vnp_Params = sortObject(vnp_Params);
   

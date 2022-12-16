@@ -2,7 +2,7 @@ import Blog from "../models/blog"
 import slugify from "slugify"
 
 export const create = async (req,res) => {
-    req.body.slug = slugify(req.body.name)
+    req.body.slug = slugify(req.body.title) 
     try{
         const add = await Blog(req.body).save()
         res.json(add) 
@@ -21,7 +21,7 @@ export const remove = async (req,res) => {
 }
 
 export const update = async (req,res) => {
-    req.body.slug = slugify(req.body.name)
+    req.body.slug = slugify(req.body.title) 
     try {
         const updateBlog = await Blog.findOneAndUpdate({_id:req.params.id},req.body,{new:true}).exec()
         res.json(updateBlog)
@@ -32,7 +32,7 @@ export const update = async (req,res) => {
 
 export const getAll = async (req, res)=> {
     try {
-        const getBlog = await Blog.find().exec()
+        const getBlog = await Blog.find().populate(["category","user"]).exec()
         res.json(getBlog)
     } catch (error) {
         
@@ -41,8 +41,8 @@ export const getAll = async (req, res)=> {
 
 export const getOne = async (req, res)=> {
     try {
-        const Blog = await Blog.find({ slug: req.params.slug }).exec()
-        res.json(Blog[0])
+        const blog = await Blog.find({ slug: req.params.slug }).populate(["category","user"]).exec()
+        res.json(blog[0])
     } catch (error) {
         
     }
