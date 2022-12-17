@@ -1,6 +1,7 @@
 import crypto  from 'crypto';
 import querystring  from 'qs';
 import dateFormat from 'dateformat';
+const { detailorder} = require('../controller/order')
 function sortObject(obj) {
     var sorted = {};
     var str = [];
@@ -16,7 +17,7 @@ function sortObject(obj) {
     }
     return sorted;
   }
-  
+ 
   export const CreatePayment = async (req, res) => {
     // try {
     var ipAddr = '127.0.0.1';
@@ -25,6 +26,7 @@ function sortObject(obj) {
     const {phone}=req.body;
     const {email}=req.body;
     const {checkins}=req.body;
+    console.log(checkins);
     const {checkouts}=req.body;
     const {statusorder}=req.body;
   
@@ -32,10 +34,13 @@ function sortObject(obj) {
     
   
     
+
+    const {_id} = detailorder
+    console.log(_id)
     const vnp_TmnCode = 'J17L9NNN';
     const vnp_HashSecret = 'VAMHNWPTSMHQARDWIKAWVMTOLXQHCCGO';
     const vnp_Url = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
-    const vnp_ReturnUrl = 'http://localhost:3000/profile/order/bill';
+    const vnp_ReturnUrl = `http://localhost:3000/profile/order/bill`;
     var tmnCode = vnp_TmnCode;
     var secretKey = vnp_HashSecret;
     var vnpUrl = vnp_Url;
@@ -61,7 +66,7 @@ function sortObject(obj) {
     vnp_Params['vnp_Command'] = 'pay';
     vnp_Params['vnp_TmnCode'] = tmnCode;
     vnp_Params['vnp_OrderInfo'] = "Thanh toan hoa don";
-  
+    // vnp_Params['vnp_checkins']=checkins;
     // vnp_Params['vnp_Merchant'] = ''
     vnp_Params['vnp_Locale'] = locale;
     vnp_Params['vnp_CurrCode'] = currCode;
@@ -77,7 +82,7 @@ function sortObject(obj) {
     // }
   
     vnp_Params = sortObject(vnp_Params);
-  
+    
     
     var signData = querystring.stringify(vnp_Params, { encode: false });
     
@@ -98,12 +103,9 @@ function sortObject(obj) {
   };
 
     export const RertunPayment = async (req, res) => {
-      const {name}=req.body;
-      const {phone}=req.body;
-      const {email}=req.body;
-      const {checkins}=req.body;
-      const {checkouts}=req.body;
-      const {statusorder}=req.body;
+      const {order}=req.body;
+      const {room}=req.body;
+    
     // logic dùng window.location.search để lấy full param +&idUser=...
     //Fe truyền xuống đầy đủ thông tin trên URL dc trả về và idUser lấy các thông tin để lưu bill
     var vnp_Params = req.query;
