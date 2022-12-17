@@ -28,6 +28,9 @@ const RomSchema = Schema({
         // required: true,
         minLength:5
     },
+    status:{
+        type:Boolean
+    },
     category:{
         type: ObjectId,
         ref:"Category"

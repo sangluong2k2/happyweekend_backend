@@ -82,3 +82,17 @@ export const sendMail = async (req, res) => {
         }
     );
 }
+
+export const checkUserBookRoom = async (req, res) => {
+    const { user, room } = req.body;
+
+    try {
+        const isOrderExits = await Order.findOne({ statusorder: 3, user, room }).exec();
+
+        res.json({
+            isBooked: isOrderExits ? true : false
+        })
+    } catch (error) {
+        res.status(404).json(error);
+    }
+}
