@@ -51,10 +51,23 @@ export const update = async (req, res) => {
 
     }
 }
-
+function convert(str) {
+    var date = new Date(str),
+      mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+      day = ("0" + date.getDate()).slice(-2);
+    return [date.getFullYear(), mnth, day].join("/");
+  }
+  
+ 
+  //-> "2011-06-08"
 export const search = async (req, res) => {
-    const checkIn = req.query.dateFrom;
-    const checkOut = req.query.dateTo;
+
+    var checkIn = req.query.dateFrom;
+    checkIn = convert(checkIn);
+
+    var checkOut = req.query.dateTo;
+    checkOut = convert(checkOut);
+    console.log(checkIn,checkOut)
     try {
         const rooms = await dateBooked.find({
             dateFrom: { $eq: checkIn },
