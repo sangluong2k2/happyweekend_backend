@@ -3,6 +3,8 @@ import Comment from "../models/comments"
 import slugify from "slugify"
 import imagesroom from "../models/imagesroom"
 import dateBooked from "../models/dateBooked"
+import room from "../models/room"
+var _ = require('lodash');
 
 export const creat = async (req, res) => {
     req.body.slug = slugify(req.body.name)
@@ -69,24 +71,45 @@ export const search = async (req, res) => {
     checkOut = convert(checkOut);
     console.log(checkIn,checkOut)
     try {
-        const rooms = await dateBooked.find({
-            dateFrom: { $eq: checkIn },
-            dateTo: { $eq: checkOut }
+        const bookedRooms = await dateBooked.find({
+            dateFrom: { $gte: new Date(checkIn) },
+            dateTo: { $lte: new Date(checkOut) }
         }).exec()
-        res.json(rooms)
+        // console.log(bookedRooms);
+        let bookedRoomId = bookedRooms.map((item) => item.room);
+        const enqBookRoomId = _.uniq(bookedRoomId);
+        await Room.find().exec().then((result) => {
+            let _rooms = _.cloneDeep(result)
+            if (!(checkOut === 'null')) {
+                _rooms.map((item, index) => {
+                    enqBookRoomId.map((idItem) => {
+                        if (JSON.stringify(item._id) == JSON.stringify(idItem)) {
+                            _rooms.splice(index, 1);
+                        }
+                    })
+                    if (index === _rooms.length - 1) {
+                        res.json(_rooms)
+                    }
+                })
+            }
+            else {
+                res.json(result)
+            }
+        })
     } catch (error) {
-
+        console.log(error);
+        res.status(400).json([])
     }
 }
 
-export const read = async (req,res) => {
+export const read = async (req, res) => {
     try {
-        const room = await Room.findOne({slug: req.params.slug}).exec();
-        const comments = await Comment.find({room: room}).populate('room').select('-room').exec()
+        const room = await Room.findOne({ slug: req.params.slug }).exec();
+        const comments = await Comment.find({ room: room }).populate('room').select('-room').exec()
         res.json({
             comments
         });
     } catch (error) {
-        
+
     }
 }
