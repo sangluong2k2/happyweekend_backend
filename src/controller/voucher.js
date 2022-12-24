@@ -30,7 +30,7 @@ export const update = async (req,res) => {
 
 export const getAll = async (req, res)=> {
     try {
-        const getVoucher = await Voucher.find().exec()
+        const getVoucher = await Voucher.find().sort({_id:-1}).exec()
         res.json(getVoucher)
     } catch (error) {
         
