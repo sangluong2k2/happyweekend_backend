@@ -40,6 +40,10 @@ const orderSchema = Schema({
         type: ObjectId,
         ref:"DateBooked"
     },
+    voucher:{
+        type:ObjectId,
+        ref:"Voucher"
+    }
 }, {timestamps:true})
 
 

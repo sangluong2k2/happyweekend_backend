@@ -45,3 +45,12 @@ export const getOne = async (req, res)=> {
         
     }
 }
+
+export const getByCode = async (req,res) => {
+    try {
+        const voucher = await Voucher.find({code: req.params.code }).exec()
+        res.json(voucher[0])
+    } catch (error) {
+        
+    }
+}
