@@ -40,11 +40,9 @@ const orderSchema = Schema({
         type: ObjectId,
         ref:"DateBooked"
     },
-    month: {
-        type: String
-    },
-    year: {
-        type: String
+    voucher:{
+        type:ObjectId,
+        ref:"Voucher"
     }
 }, {timestamps:true})
 
