@@ -1,3 +1,4 @@
+import order from '../models/order'
 import Order from '../models/order'
 import Room from '../models/room'
 
@@ -47,12 +48,15 @@ export const listUser = async (req, res) => {
         // ,room
     )
 }
-
+console.log(order)
 export const sendMail = async (req, res) => {
     const { email } = req.body
     const { name } = req.body
     const { room } = req.body
+    
     const { checkins } = req.body
+    const { checkouts } = req.body
+    const { total } = req.body
     const nodemailer = require('nodemailer');
     // create reusable transporter object using the default SMTP transport
     const transporter = nodemailer.createTransport({
@@ -65,9 +69,9 @@ export const sendMail = async (req, res) => {
     await transporter.sendMail({
         from: "ngankien1111@gmail.com", // sender address
         to: `${email}`, // list of receivers
-        subject: "Hello ✔", // Subject line
-        text: `${name} đã đặt phòng ${room} thành công trong khoảng thời gian ${checkins} !`, // plain text body
-        html: `<b>${name} đã đặt phòng ${room} thành công trong khoảng thời gian ${checkins} !</b>`, // html body
+        subject: "HappyWeekendHotel", // Subject line
+        text: `${name} đã đặt phòng ${room} thành công trong khoảng thời gian ${checkins} tới ngày ${checkouts} với giá tiền ${total}VNĐ!`, // plain text body
+        html: `<b>${name} đã đặt phòng ${room} thành công trong khoảng thời gian ${checkins} ngày ${checkouts} với giá tiền ${total}VNĐ!</b>`, // html body
     },
         (err) => {
             if (err) {
