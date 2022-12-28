@@ -64,42 +64,7 @@ function convert(str) {
   //-> "2011-06-08"
 export const search = async (req, res) => {
 
-    var checkIn = req.query.dateFrom;
-    checkIn = convert(checkIn);
-
-    var checkOut = req.query.dateTo;
-    checkOut = convert(checkOut);
-    console.log(checkIn,checkOut)
-    try {
-        const bookedRooms = await dateBooked.find({
-            dateFrom: { $gte: new Date(checkIn) },
-            dateTo: { $lte: new Date(checkOut) }
-        }).exec()
-        // console.log(bookedRooms);
-        let bookedRoomId = bookedRooms.map((item) => item.room);
-        const enqBookRoomId = _.uniq(bookedRoomId);
-        await Room.find().exec().then((result) => {
-            let _rooms = _.cloneDeep(result)
-            if (!(checkOut === 'null')) {
-                _rooms.map((item, index) => {
-                    enqBookRoomId.map((idItem) => {
-                        if (JSON.stringify(item._id) == JSON.stringify(idItem)) {
-                            _rooms.splice(index, 1);
-                        }
-                    })
-                    if (index === _rooms.length - 1) {
-                        res.json(_rooms)
-                    }
-                })
-            }
-            else {
-                res.json(result)
-            }
-        })
-    } catch (error) {
-        console.log(error);
-        res.status(400).json([])
-    }
+ 
 }
 
 export const read = async (req, res) => {
