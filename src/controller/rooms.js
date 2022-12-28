@@ -3,8 +3,6 @@ import Comment from "../models/comments"
 import slugify from "slugify"
 import imagesroom from "../models/imagesroom"
 import dateBooked from "../models/dateBooked"
-import room from "../models/room"
-var _ = require('lodash');
 
 export const creat = async (req, res) => {
     req.body.slug = slugify(req.body.name)
@@ -62,19 +60,19 @@ function convert(str) {
   
  
   //-> "2011-06-08"
-export const search = async (req, res) => {
+  export const search = async (req, res) => {
 
  
 }
 
-export const read = async (req, res) => {
+export const read = async (req,res) => {
     try {
-        const room = await Room.findOne({ slug: req.params.slug }).exec();
-        const comments = await Comment.find({ room: room }).populate('room').select('-room').exec()
+        const room = await Room.findOne({slug: req.params.slug}).exec();
+        const comments = await Comment.find({room: room}).populate('room').select('-room').exec()
         res.json({
             comments
         });
     } catch (error) {
-
+        
     }
 }

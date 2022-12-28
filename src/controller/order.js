@@ -1,3 +1,4 @@
+import order from '../models/order'
 import Order from '../models/order'
 import Room from '../models/room'
 
@@ -8,6 +9,9 @@ export const getall = async (req, res) => {
     res.json(list)
 }
 export const orderroom = async (req, res) => {
+
+    const add = await new Order(req.body).save()
+    res.json(add)
     try {
         const payload = { ...req.body };
         payload.month = new Date(payload.checkouts).getMonth() + 1;
@@ -19,7 +23,7 @@ export const orderroom = async (req, res) => {
     }
 }
 export const detailorder = async (req, res) => {
-    const order = await Order.findOne({ _id: req.params.id }).populate("voucher").exec()
+    const order = await Order.findOne({ _id: req.params.id }).exec()
     const room = await Room.find({ _id: order.room }).exec()
     // const basic = await Basic.find({_id: room.basic}).exec()
     // const status = await Status.find({_id: order.status}).exec()
@@ -31,8 +35,7 @@ export const detailorder = async (req, res) => {
             total: order.total,
             checkins: order.checkins,
             checkouts: order.checkouts,
-            statusorder: order.statusorder,
-            voucher: order.voucher
+            statusorder: order.statusorder
         },
         room,
         // status,
@@ -55,12 +58,15 @@ export const listUser = async (req, res) => {
         // ,room
     )
 }
-
+console.log(order)
 export const sendMail = async (req, res) => {
     const { email } = req.body
     const { name } = req.body
     const { room } = req.body
+    
     const { checkins } = req.body
+    const { checkouts } = req.body
+    const { total } = req.body
     const nodemailer = require('nodemailer');
     // create reusable transporter object using the default SMTP transport
     const transporter = nodemailer.createTransport({
@@ -73,9 +79,9 @@ export const sendMail = async (req, res) => {
     await transporter.sendMail({
         from: "ngankien1111@gmail.com", // sender address
         to: `${email}`, // list of receivers
-        subject: "Hello ✔", // Subject line
-        text: `${name} đã đặt phòng ${room} thành công trong khoảng thời gian ${checkins} !`, // plain text body
-        html: `<b>${name} đã đặt phòng ${room} thành công trong khoảng thời gian ${checkins} !</b>`, // html body
+        subject: "HappyWeekendHotel", // Subject line
+        text: `${name} đã đặt phòng ${room} thành công trong khoảng thời gian ${checkins} tới ngày ${checkouts} với giá tiền ${total}VNĐ!`, // plain text body
+        html: `<b>${name} đã đặt phòng ${room} thành công trong khoảng thời gian ${checkins} ngày ${checkouts} với giá tiền ${total}VNĐ!</b>`, // html body
     },
         (err) => {
             if (err) {
@@ -93,13 +99,9 @@ export const sendMail = async (req, res) => {
 
 export const checkUserBookRoom = async (req, res) => {
     const { user, room } = req.body;
-    const condition = { statusorder: 3, user };
-    if (room) {
-        condition.room = room;
-    }
 
     try {
-        const isOrderExits = await Order.findOne(condition).exec();
+        const isOrderExits = await Order.findOne({ statusorder: 3, user, room }).exec();
 
         res.json({
             isBooked: isOrderExits ? true : false
@@ -107,6 +109,7 @@ export const checkUserBookRoom = async (req, res) => {
     } catch (error) {
         res.status(404).json(error);
     }
+
 }
 
 export const getRevenue = async (req, res) => {
@@ -197,4 +200,5 @@ export const getRevenueByMonth = async (req, res) => {
     //         _order.push(item)
     //     }
     // })
+
 }
