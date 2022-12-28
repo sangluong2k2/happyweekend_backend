@@ -61,19 +61,21 @@ function convert(str) {
  
   //-> "2011-06-08"
 export const search = async (req, res) => {
-
+    const room = await Room.find().exec()
     var checkIn = req.query.dateFrom;
     checkIn = convert(checkIn);
-
     var checkOut = req.query.dateTo;
     checkOut = convert(checkOut);
     console.log(checkIn,checkOut)
+    
     try {
         const rooms = await dateBooked.find({
-            dateFrom: { $eq: checkIn },
-            dateTo: { $eq: checkOut }
+            
+            dateFrom: { $gt: checkIn },
+            dateTo: { $lt: checkOut }
         }).exec()
         res.json(rooms)
+        console.log(rooms)
     } catch (error) {
 
     }
