@@ -43,6 +43,32 @@ const RomSchema = Schema({
         type: ObjectId,
         ref: "Facilities"
     }
-}, {timestamps: true})
+}, {timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true }})
+
+// list rating.
+RomSchema.virtual("ratings", {
+    ref: "Comment",
+    foreignField: "room",
+    localField: "_id"
+});
+
+RomSchema.pre(/^find/, function(next) {
+    this.populate(["ratings", "listFacility"]);
+
+    next();
+});
+
+RomSchema.virtual("ratingAvg").get(function() {
+    let totalStar = 0;
+    this.ratings.forEach(item => totalStar += +item.star);
+
+    return ((totalStar / this.ratings.length) || 0).toFixed(1);
+})
+
+RomSchema.virtual("listFacility", {
+    ref: "Facilities",
+    foreignField: "room",
+    localField: "_id"
+})
 
 export default mongoose.model("Room",RomSchema)
