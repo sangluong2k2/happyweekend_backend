@@ -63,7 +63,7 @@ export const sendMail = async (req, res) => {
     const { email } = req.body
     const { name } = req.body
     const { room } = req.body
-    
+    const {phone} =req.body
     const { checkins } = req.body
     const { checkouts } = req.body
     const { total } = req.body
@@ -81,7 +81,115 @@ export const sendMail = async (req, res) => {
         to: `${email}`, // list of receivers
         subject: "HappyWeekendHotel", // Subject line
         text: `${name} đã đặt phòng ${room} thành công trong khoảng thời gian ${checkins} tới ngày ${checkouts} với giá tiền ${total}VNĐ!`, // plain text body
-        html: `<b>${name} đã đặt phòng ${room} thành công trong khoảng thời gian ${checkins} ngày ${checkouts} với giá tiền ${total}VNĐ!</b>`, // html body
+        html: `
+        <style>
+ <div class="col-md-12">   
+ <div class="row">
+		
+        <div class="receipt-main col-xs-10 col-sm-10 col-md-6 col-xs-offset-1 col-sm-offset-1 col-md-offset-3">
+            <div class="row">
+    			<div class="receipt-header">
+					<div class="col-xs-6 col-sm-6 col-md-6">
+						<div class="receipt-left">
+							<img class="img-responsive" alt="iamgurdeeposahan" src="https://bootdey.com/img/Content/avatar/avatar6.png" style="width: 71px; border-radius: 43px;">
+						</div>
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-6 text-right">
+						<div class="receipt-right">
+							<h5>${name}</h5>
+							<p>${phone} <i class="fa fa-phone"></i></p>
+							<p>${email} <i class="fa fa-envelope-o"></i></p>
+							<p>Việt Nam <i class="fa fa-location-arrow"></i></p>
+						</div>
+					</div>
+				</div>
+            </div>
+			
+			<div class="row">
+				<div class="receipt-header receipt-header-mid">
+					<div class="col-xs-8 col-sm-8 col-md-8 text-left">
+						<div class="receipt-right">
+							<h5>${name} </h5>
+							<p><b>Mobile :</b> ${phone}</p>
+							<p><b>Email :</b> ${email}</p>
+							<p><b>Address :</b> Việt Nam</p>
+						</div>
+					</div>
+					<div class="col-xs-4 col-sm-4 col-md-4">
+						<div class="receipt-left">
+							<h3>HÓA ĐƠN ĐẶT PHÒNG NHÀ NGHỈ HAPPYWEENKEND</h3>
+						</div>
+					</div>
+				</div>
+            </div>
+			
+            <div>
+                <table class="table table-bordered">
+                    <thead style="background: #414143 none repeat scroll 0 0">
+                        <tr>
+                            <th style="padding :13px 20px !important">Description</th>
+                            <th style="padding :13px 20px !important" >Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-md-9">Tên phòng</td>
+                            <td class="col-md-3"><i class="fa fa-inr"></i> ${room}</td>
+                        </tr>
+                        <tr>
+                           
+                        </tr>
+                        <tr>
+                            <td style="padding: 9px 20px !important" class="text-right">
+                            <p>
+                                <strong>Checkins </strong>
+                            </p>
+                            <p>
+                                <strong>Checkout </strong>
+                            </p>
+							
+							
+							</td>
+                            <td>
+                            <p>
+                                <strong><i class="fa fa-inr"></i> ${checkins}</strong>
+                            </p>
+                            <p>
+                                <strong><i class="fa fa-inr"></i> ${checkouts}</strong>
+                            </p>
+							
+							
+							</td>
+                        </tr>
+                        <tr>
+                           
+                            <td class="text-right"><h2><strong>Total: </strong></h2></td>
+                            <td class="text-left text-danger"  ><h2 style="color:#9f181c"><strong><i class="fa fa-inr"></i> ${total}</strong></h2></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+			
+			<div class="row">
+				<div class="receipt-header receipt-header-mid receipt-footer">
+					<div class="col-xs-8 col-sm-8 col-md-8 text-left">
+						<div class="receipt-right">
+							
+							<h5 style="color: rgb(140, 140, 140);">Thanks for shopping.!</h5>
+						</div>
+					</div>
+					<div class="col-xs-4 col-sm-4 col-md-4">
+						<div class="receipt-left">
+							<h1>HAPPYWEENKEND</h1>
+						</div>
+					</div>
+				</div>
+            </div>
+			
+        </div>    
+	</div>
+</div>
+        `, // html body
     },
         (err) => {
             if (err) {
