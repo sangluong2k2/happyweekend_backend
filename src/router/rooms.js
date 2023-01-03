@@ -9,7 +9,7 @@ router.get("/rooms/:slug",getOne)
 router.post("/rooms",creat)
 router.delete("/rooms/:id/delete", remove)
 router.put("/rooms/:id/edit", update)
-router.get("/room", search)
+router.post("/rooms/search", search)
 router.get("/room/:slug",read)
 
 module.exports = router
