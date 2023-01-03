@@ -1,6 +1,6 @@
 const {Router} = require('express')
 
-const { getall, orderroom, detailorder, update, listUser, sendMail, checkUserBookRoom, getRevenue, getRevenueByMonth, } = require('../controller/order')
+const { getall, orderroom, detailorder, update, listUser, sendMail, checkUserBookRoom, getRevenue, getRevenueByMonth, getRoomOccupancy, } = require('../controller/order')
 
 
 const router = Router()
@@ -15,6 +15,7 @@ router.post("/sendMail",sendMail)
 
 router.post("/revenue", getRevenue)
 router.post("/revenueByMonth", getRevenueByMonth)
+router.post("/revenueByRoom", getRoomOccupancy)
 
 
 

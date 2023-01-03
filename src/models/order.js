@@ -49,6 +49,9 @@ const orderSchema = Schema({
     },
     month: {
         type: String,
+    },
+    duration: {
+        type: Number
     }
 }, {timestamps:true})
 
