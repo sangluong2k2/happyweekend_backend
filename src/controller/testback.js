@@ -19,14 +19,21 @@ function sortObject(obj) {
   }
  
   export const CreatePayment = async (req, res) => {
+    
     // try {
     var ipAddr = '127.0.0.1';
     const {total}=req.body;
+    const {voucher} = req.body ? voucher !=null :req.body;
+    console.log("aaaa")
+    const {tien} =total - voucher >= 0 ? total - voucher : 0;
+    console.log("1:"+total)
+    console.log("2:"+voucher)
+    console.log("3:",total - voucher)
     const {name}=req.body;
     const {phone}=req.body;
     const {email}=req.body;
     const {checkins}=req.body;
-    console.log(checkins);
+   
     const {checkouts}=req.body;
     const {statusorder}=req.body;
   
@@ -73,7 +80,7 @@ function sortObject(obj) {
     vnp_Params['vnp_TxnRef'] = orderId;
     // vnp_Params['vnp_OrderInfo'] = orderInfo;
     vnp_Params['vnp_OrderType'] = orderType;
-    vnp_Params['vnp_Amount'] = total * 100;
+    vnp_Params['vnp_Amount'] = tien * 100;
     vnp_Params['vnp_ReturnUrl'] = returnUrl;
     vnp_Params['vnp_IpAddr'] = ipAddr;
     vnp_Params['vnp_CreateDate'] = createDate;
@@ -90,7 +97,7 @@ function sortObject(obj) {
     var signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
     vnp_Params['vnp_SecureHash'] = signed;
     vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
-  
+    console.log(' vnp_Params',vnp_Params)
     console.log('vnpUrl', vnpUrl);
     return res.status(200).json({
       redirect: vnpUrl,

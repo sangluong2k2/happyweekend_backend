@@ -82,7 +82,7 @@ export const sendMail = async (req, res) => {
         subject: "HappyWeekendHotel", // Subject line
         text: `${name} đã đặt phòng ${room} thành công trong khoảng thời gian ${checkins} tới ngày ${checkouts} với giá tiền ${total}VNĐ!`, // plain text body
         html: `
-        <style>
+       
  <div class="col-md-12">   
  <div class="row">
 		
