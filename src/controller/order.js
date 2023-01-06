@@ -1,11 +1,7 @@
-import { duration } from 'moment/moment'
-import { count } from 'moongose/models/user_model'
-import order from '../models/order'
 import Order from '../models/order'
 import Room from '../models/room'
 
 // import Basic from '../models/basic'
-import Status from '../models/statusroom'
 export const getall = async (req, res) => {
     const list = await Order.find().populate('room').select().exec()
     res.json(list)
@@ -18,7 +14,7 @@ export const orderroom = async (req, res) => {
         const payload = { ...req.body };
         payload.month = new Date(payload.checkouts).getMonth() + 1;
         payload.year = new Date(payload.checkouts).getFullYear();
-        let duration = (((new Date(payload.checkouts).getTime() - new Date(payload.checkins))/1000)/60)/60;
+        let duration = (((new Date(payload.checkouts).getTime() - new Date(payload.checkins)) / 1000) / 60) / 60;
         payload.duration = duration;
         const add = await new Order(payload).save()
         res.json(add)
@@ -66,7 +62,7 @@ export const sendMail = async (req, res) => {
     const { email } = req.body
     const { name } = req.body
     const { room } = req.body
-    const {phone} =req.body
+    const { phone } = req.body
     const { checkins } = req.body
     const { checkouts } = req.body
     const { total } = req.body
@@ -323,23 +319,33 @@ export const getRoomOccupancy = async (req, res) => {
         let topRoom = [];
         const getDatarevenueByRoom = async (count, index) => {
             let i = index;
-            if (i < count) {
+            if (i <= count) {
                 const payload = (room[i]._id)
-                console.log(payload);
-                const order = await Order.aggregate([
-                    {$match: {room: payload}},
-                    {$group: {room: "$room"}, total: {$sum: "$duration"}}
-                ])  
-                topRoom.push(order)
-                i++;
-                getDatarevenueByRoom(count, i);
-            }
-            if (i === count) {
-                res.status(200).json(topRoom)
+                try {
+                    await Order.aggregate([
+                        { $match: { room: payload } },
+                        { $group: { _id: "$room", total: { $sum: "$duration" } } }
+                    ])
+                        .then((res) => {
+                            topRoom.push(res[0]);
+                        })
+                        .then(async () => {
+                            if (i === count) {
+                                res.status(200).json(topRoom);
+                            }
+                        })
+                        .then(() => {
+                            if (i < count) {
+                                i++;
+                                getDatarevenueByRoom(count, i);
+                            }
+                        })
+                } catch (error) {
+                    res.status(400).json("Có lỗi gì rồi. hic");
+                }
             }
         }
-        getDatarevenueByRoom(room.length - 1, 0)
-        // res.json(topRoom)
+        getDatarevenueByRoom(room.length - 1, 0);
     } catch (error) {
         res.status(400).json(error)
     }
