@@ -326,8 +326,11 @@ export const getRoomOccupancy = async (req, res) => {
                         { $match: { room: payload } },
                         { $group: { _id: "$room", total: { $sum: "$duration" } } }
                     ])
-                        .then((res) => {
-                            topRoom.push(res[0]);
+                        .then(async(res) => {
+                            const room = await Room.find({_id: res[0]._id})
+                            let _res = {...res[0]};
+                            _res.name = room[0].name;
+                            topRoom.push(_res);
                         })
                         .then(async () => {
                             if (i === count) {
