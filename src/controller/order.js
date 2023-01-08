@@ -24,7 +24,7 @@ export const orderroom = async (req, res) => {
     }
 }
 export const detailorder = async (req, res) => {
-    const order = await Order.findOne({ _id: req.params.id }).exec()
+    const order = await Order.findOne({ _id: req.params.id }).populate("voucher").exec();
     const room = await Room.find({ _id: order.room }).exec()
     // const basic = await Basic.find({_id: room.basic}).exec()
     // const status = await Status.find({_id: order.status}).exec()
@@ -36,7 +36,8 @@ export const detailorder = async (req, res) => {
             total: order.total,
             checkins: order.checkins,
             checkouts: order.checkouts,
-            statusorder: order.statusorder
+            statusorder: order.statusorder,
+            voucher: order.voucher
         },
         room,
         // status,
@@ -207,9 +208,13 @@ export const sendMail = async (req, res) => {
 
 export const checkUserBookRoom = async (req, res) => {
     const { user, room } = req.body;
+    const condition = { statusorder: 3, user };
+    if (room) {
+        condition.room = room;
+    }
 
     try {
-        const isOrderExits = await Order.findOne({ statusorder: 3, user, room }).exec();
+        const isOrderExits = await Order.findOne(condition).exec();
 
         res.json({
             isBooked: isOrderExits ? true : false
@@ -217,7 +222,6 @@ export const checkUserBookRoom = async (req, res) => {
     } catch (error) {
         res.status(404).json(error);
     }
-
 }
 
 // thống kê doanh thu theo năm hoặc tháng 
