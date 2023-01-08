@@ -1,5 +1,6 @@
 import Order from '../models/order'
 import Room from '../models/room'
+import DateBooked from "../models/dateBooked";
 
 // import Basic from '../models/basic'
 export const getall = async (req, res) => {
@@ -351,5 +352,52 @@ export const getRoomOccupancy = async (req, res) => {
         getDatarevenueByRoom(room.length - 1, 0);
     } catch (error) {
         res.status(400).json(error)
+    }
+}
+
+// check trùng lặp thời gian
+function areTwoDateTimeRangesOverlapping(incommingDateTimeRange, existingDateTimeRange) {
+    return incommingDateTimeRange.start < existingDateTimeRange.end && incommingDateTimeRange.end > existingDateTimeRange.start
+}
+
+function areManyDateTimeRangesOverlapping(incommingDateTimeRange, existingDateTimeRanges) {
+    return existingDateTimeRanges.some((existingDateTimeRange) => areTwoDateTimeRangesOverlapping(incommingDateTimeRange, existingDateTimeRange))
+}
+
+// kiểm tra phòng có khách hay không.
+export const checkStatusRoom = async (req, res) => {
+    const { checkin, checkout, room } = req.body;
+    if (!checkin || !checkout || !room) {
+        res.status(400).json("Vui lòng nhập đủ các trường!");
+        return;
+    }
+
+    try {
+        let isRoomEmpty;
+        const dateBooks = await DateBooked.find().exec();
+        const dateBookByRoom = dateBooks.filter(item => item.room.toString() === room);
+
+        if (!dateBookByRoom.length) {
+            isRoomEmpty = true;
+        } else {
+            const listDateByRoom = dateBookByRoom.map(item => {
+                return {
+                    start: new Date(item.dateFrom).getTime(),
+                    end: new Date(item.dateTo).getTime()
+                };
+            });
+
+            // trạng thái phòng trống.
+            const status = areManyDateTimeRangesOverlapping({
+                start: new Date(checkin).getTime(),
+                end: new Date(checkout).getTime()
+            }, listDateByRoom);
+
+            isRoomEmpty = !status;
+        }
+
+        res.json({ isRoomEmpty });
+    } catch (error) {
+        res.status(404).json("Có mỗi xảy ra, vui lòng thử lại!");
     }
 }
