@@ -1,5 +1,6 @@
 import Order from '../models/order'
 import Room from '../models/room'
+import DateBooked from "../models/dateBooked";
 
 // import Basic from '../models/basic'
 export const getall = async (req, res) => {
@@ -23,7 +24,7 @@ export const orderroom = async (req, res) => {
     }
 }
 export const detailorder = async (req, res) => {
-    const order = await Order.findOne({ _id: req.params.id }).exec()
+    const order = await Order.findOne({ _id: req.params.id }).populate("voucher").exec();
     const room = await Room.find({ _id: order.room }).exec()
     // const basic = await Basic.find({_id: room.basic}).exec()
     // const status = await Status.find({_id: order.status}).exec()
@@ -35,7 +36,8 @@ export const detailorder = async (req, res) => {
             total: order.total,
             checkins: order.checkins,
             checkouts: order.checkouts,
-            statusorder: order.statusorder
+            statusorder: order.statusorder,
+            voucher: order.voucher
         },
         room,
         // status,
@@ -206,9 +208,13 @@ export const sendMail = async (req, res) => {
 
 export const checkUserBookRoom = async (req, res) => {
     const { user, room } = req.body;
+    const condition = { statusorder: 3, user };
+    if (room) {
+        condition.room = room;
+    }
 
     try {
-        const isOrderExits = await Order.findOne({ statusorder: 3, user, room }).exec();
+        const isOrderExits = await Order.findOne(condition).exec();
 
         res.json({
             isBooked: isOrderExits ? true : false
@@ -216,7 +222,6 @@ export const checkUserBookRoom = async (req, res) => {
     } catch (error) {
         res.status(404).json(error);
     }
-
 }
 
 // thống kê doanh thu theo năm hoặc tháng 
@@ -351,5 +356,52 @@ export const getRoomOccupancy = async (req, res) => {
         getDatarevenueByRoom(room.length - 1, 0);
     } catch (error) {
         res.status(400).json(error)
+    }
+}
+
+// check trùng lặp thời gian
+function areTwoDateTimeRangesOverlapping(incommingDateTimeRange, existingDateTimeRange) {
+    return incommingDateTimeRange.start < existingDateTimeRange.end && incommingDateTimeRange.end > existingDateTimeRange.start
+}
+
+function areManyDateTimeRangesOverlapping(incommingDateTimeRange, existingDateTimeRanges) {
+    return existingDateTimeRanges.some((existingDateTimeRange) => areTwoDateTimeRangesOverlapping(incommingDateTimeRange, existingDateTimeRange))
+}
+
+// kiểm tra phòng có khách hay không.
+export const checkStatusRoom = async (req, res) => {
+    const { checkin, checkout, room } = req.body;
+    if (!checkin || !checkout || !room) {
+        res.status(400).json("Vui lòng nhập đủ các trường!");
+        return;
+    }
+
+    try {
+        let isRoomEmpty;
+        const dateBooks = await DateBooked.find().exec();
+        const dateBookByRoom = dateBooks.filter(item => item.room.toString() === room);
+
+        if (!dateBookByRoom.length) {
+            isRoomEmpty = true;
+        } else {
+            const listDateByRoom = dateBookByRoom.map(item => {
+                return {
+                    start: new Date(item.dateFrom).getTime(),
+                    end: new Date(item.dateTo).getTime()
+                };
+            });
+
+            // trạng thái phòng trống.
+            const status = areManyDateTimeRangesOverlapping({
+                start: new Date(checkin).getTime(),
+                end: new Date(checkout).getTime()
+            }, listDateByRoom);
+
+            isRoomEmpty = !status;
+        }
+
+        res.json({ isRoomEmpty });
+    } catch (error) {
+        res.status(404).json("Có mỗi xảy ra, vui lòng thử lại!");
     }
 }
