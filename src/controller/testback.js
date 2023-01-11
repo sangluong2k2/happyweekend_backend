@@ -26,21 +26,20 @@ function sortObject(obj) {
     const {phone}=req.body;
     const {email}=req.body;
     const {checkins}=req.body;
-    console.log(checkins);
     const {checkouts}=req.body;
     const {statusorder}=req.body;
-  
+    const {id_order} = req.body
     // var total = req.body.amount;
     
   
     
 
-    const {_id} = detailorder
-    console.log(_id)
+    // const {_id} = detailorder
+    // console.log(_id)
     const vnp_TmnCode = 'J17L9NNN';
     const vnp_HashSecret = 'VAMHNWPTSMHQARDWIKAWVMTOLXQHCCGO';
     const vnp_Url = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
-    const vnp_ReturnUrl = `http://localhost:3000/profile/order/bill`;
+    const vnp_ReturnUrl = `http://localhost:3000/profile/order/bill/${id_order}`;
     var tmnCode = vnp_TmnCode;
     var secretKey = vnp_HashSecret;
     var vnpUrl = vnp_Url;
@@ -132,6 +131,7 @@ function sortObject(obj) {
     if (secureHash === signed) {
       //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
       console.log(1, vnp_Params["vnp_ResponseCode"]);
+      // Order.findOneAndUpdate({_id: id_order}, {methodpay:"2"}, {new:true}).exec
       return res.status(200).json({
         message: vnp_Params
         
