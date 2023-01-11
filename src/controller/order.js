@@ -37,6 +37,7 @@ export const detailorder = async (req, res) => {
             checkins: order.checkins,
             checkouts: order.checkouts,
             statusorder: order.statusorder,
+            methodpay:order.methodpay,
             voucher: order.voucher
         },
         room,
