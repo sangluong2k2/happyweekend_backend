@@ -52,6 +52,9 @@ const orderSchema = Schema({
     },
     duration: {
         type: Number
+    },
+    methodpay:{
+        type: String
     }
 }, {timestamps:true})
 
