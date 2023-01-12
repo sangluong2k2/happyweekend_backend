@@ -28,18 +28,22 @@ export const detailorder = async (req, res) => {
     const room = await Room.find({ _id: order.room }).exec()
     // const basic = await Basic.find({_id: room.basic}).exec()
     // const status = await Status.find({_id: order.status}).exec()
+
+    let resultOrder = {
+        name: order.name,
+        phone: order.phone,
+        email: order.email,
+        total: order.total,
+        checkins: order.checkins,
+        checkouts: order.checkouts,
+        statusorder: order.statusorder,
+        methodpay:order.methodpay,
+        voucher: order.voucher
+    };
+    if (order.user) resultOrder = {...resultOrder, user: order.user.toString()};
+
     res.json({
-        order: {
-            name: order.name,
-            phone: order.phone,
-            email: order.email,
-            total: order.total,
-            checkins: order.checkins,
-            checkouts: order.checkouts,
-            statusorder: order.statusorder,
-            methodpay:order.methodpay,
-            voucher: order.voucher
-        },
+        order: resultOrder,
         room,
         // status,
         // basic

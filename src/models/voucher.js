@@ -27,7 +27,11 @@ const VoucherSchema = Schema({
     users:{
         type: Array,
         default: []
-    }
+    },
+    usersSendMail: {
+        type: Array,
+        default: []
+    } // danh sách user id đã gửi mail thông báo voucher
 },{timestamps: true})
 
 export default mongoose.model("Voucher",VoucherSchema)
