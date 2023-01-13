@@ -232,7 +232,8 @@ export const getRevenue = async (req, res) => {
     try {
         const order = await Order.find({
             month: month,
-            year: year
+            year: year,
+            statusorder: 3
         }).exec();
         res.status(200).json(order)
     } catch (error) {
@@ -251,7 +252,8 @@ export const getRevenueByMonth = async (req, res) => {
     const year = req.body.year || new Date().getFullYear();
     try {
         const order = await Order.find({
-            year: year
+            year: year,
+            statusorder: 3
         }).exec();
         const data = {
             jan: [],
@@ -321,40 +323,43 @@ export const getRevenueByMonth = async (req, res) => {
 //công suất sử dụng phòng
 export const getRoomOccupancy = async (req, res) => {
     try {
-        let room = await Room.find().exec();
+        let result = await Order.aggregate([
+            { $match: { statusorder: "3" } },
+            { $group: { _id: "$room", total: { $sum: "$duration" } } }
+        ])
         let topRoom = [];
         const getDatarevenueByRoom = async (count, index) => {
             let i = index;
             if (i <= count) {
-                const payload = (room[i]._id)
-                try {
-                    await Order.aggregate([
-                        { $match: { room: payload } },
-                        { $group: { _id: "$room", total: { $sum: "$duration" } } }
-                    ])
-                        .then(async(res) => {
-                            const room = await Room.find({_id: res[0]._id})
-                            let _res = {...res[0]};
-                            _res.name = room[0].name;
-                            topRoom.push(_res);
-                        })
-                        .then(async () => {
-                            if (i === count) {
-                                res.status(200).json(topRoom);
+                const payload = (result[i]._id)
+                // console.log(payload);
+                await Room.find({ _id: payload })
+                    .then((res) => {
+                        if (res[0]) {
+                            if ("name" in res[0]) {
+                                result[i].name = res[0].name;
                             }
-                        })
-                        .then(() => {
-                            if (i < count) {
-                                i++;
-                                getDatarevenueByRoom(count, i);
-                            }
-                        })
-                } catch (error) {
-                    res.status(400).json("Có lỗi gì rồi. hic");
-                }
+                        }
+                        else {
+                            result[i].name = "Phòng đã xóa";
+                        }
+                        topRoom.push(result[i]);
+                    })
+                    .then(async () => {
+                        if (i === count) {
+                            res.status(200).json(topRoom);
+                        }
+                    })
+                    .then(() => {
+                        if (i < count) {
+                            i++;
+                            getDatarevenueByRoom(count, i);
+                        }
+                    })
             }
         }
-        getDatarevenueByRoom(room.length - 1, 0);
+        getDatarevenueByRoom(result.length - 1, 0);
+        // res.json(result)
     } catch (error) {
         res.status(400).json(error)
     }
