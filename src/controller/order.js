@@ -1,6 +1,7 @@
 import Order from '../models/order'
 import Room from '../models/room'
 import DateBooked from "../models/dateBooked";
+import { json } from 'express';
 
 // import Basic from '../models/basic'
 export const getall = async (req, res) => {
@@ -37,10 +38,10 @@ export const detailorder = async (req, res) => {
         checkins: order.checkins,
         checkouts: order.checkouts,
         statusorder: order.statusorder,
-        methodpay:order.methodpay,
+        methodpay: order.methodpay,
         voucher: order.voucher
     };
-    if (order.user) resultOrder = {...resultOrder, user: order.user.toString()};
+    if (order.user) resultOrder = { ...resultOrder, user: order.user.toString() };
 
     res.json({
         order: resultOrder,
@@ -255,11 +256,28 @@ export const getRevenue = async (req, res) => {
 export const getRevenueByMonth = async (req, res) => {
     const year = req.body.year || new Date().getFullYear();
     try {
+        const _year = await Order.find({ year: year - 1 })
         const order = await Order.find({
             year: year,
             statusorder: 3
         }).exec();
+        // const defaultMonth = {
+        //     jan: [],
+        //     feb: [],
+        //     mar: [],
+        //     apr: [],
+        //     may: [],
+        //     jun: [],
+        //     jul: [],
+        //     aug: [],
+        //     sep: [],
+        //     oct: [],
+        //     nov: [],
+        //     dec: [],
+        // }
         const data = {
+            // preYear: defaultMonth,
+            // curYear: defaultMonth
             jan: [],
             feb: [],
             mar: [],
@@ -327,8 +345,10 @@ export const getRevenueByMonth = async (req, res) => {
 //công suất sử dụng phòng
 export const getRoomOccupancy = async (req, res) => {
     try {
+        const month = new Date().getMonth() + 1;
+        const year = new Date().getFullYear();
         let result = await Order.aggregate([
-            { $match: { statusorder: "3" } },
+            { $match: { statusorder: "3", month: month.toString(), year: year.toString() } },
             { $group: { _id: "$room", total: { $sum: "$duration" } } }
         ])
         let topRoom = [];
@@ -413,5 +433,80 @@ export const checkStatusRoom = async (req, res) => {
         res.json({ isRoomEmpty });
     } catch (error) {
         res.status(404).json("Có mỗi xảy ra, vui lòng thử lại!");
+    }
+}
+
+export const getRoomOrder = async (req, res) => {
+    try {
+        const room = req.body.room;
+        const roomOrder = await Order.find({
+            room: room
+        }).exec();
+        res.status(200).json(roomOrder);
+    } catch (error) {
+        res.status(200).json([])
+    }
+}
+
+export const getRoomRevenue = async (req, res) => {
+    try {
+        const month = new Date().getMonth() + 1;
+        const year = new Date().getFullYear();
+        const room = await Room.find().exec();
+        let roomId = [];
+        room.map((item) => {
+            roomId.push(item._id)
+        })
+        let topRoom = [];
+        const getDatarevenueByRoom = async (count, index) => {
+            let i = index;
+            if (i <= count) {
+                const payload = (roomId[i])
+                // console.log(payload);
+                await Order.aggregate([
+                    // { room: payload }
+                    { $match: { room: payload, statusorder: "3", month: month.toString(), year: year.toString() } },
+                    { $group: { _id: "$room", total: { $sum: "$total" } } }
+                ])
+                    .then((res) => {
+                        if (res[0]) {
+                            room.map((item) => {
+                                if (JSON.stringify(item._id) === JSON.stringify(res[0]._id)) {
+                                    return res[0].name = item.name
+                                }
+                            })
+                        }
+                        else {
+                            // res[0]name = "Phòng đã xóa";
+                        }
+                        topRoom.push(res);
+                    })
+                    .then(async () => {
+                        if (i === count) {
+                            let newTopRoom = [];
+                            topRoom.map((item) => {
+                                if (item[0]) {
+                                    newTopRoom.push({
+                                        name: item[0].name,
+                                        total: item[0].total
+                                    })
+                                }
+                            })
+                            res.status(200).json(newTopRoom);
+                        }
+                    })
+                    .then(() => {
+                        if (i < count) {
+                            i++;
+                            getDatarevenueByRoom(count, i);
+                        }
+                    })
+            }
+        }
+        getDatarevenueByRoom(roomId.length - 1, 0);
+
+        // res.status(200).json(topRoom);
+    } catch (error) {
+        res.status(200).json([])
     }
 }
