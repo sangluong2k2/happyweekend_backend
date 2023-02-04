@@ -2,6 +2,7 @@ import Order from '../models/order'
 import Room from '../models/room'
 import DateBooked from "../models/dateBooked";
 import { json } from 'express';
+import { search } from './rooms';
 
 // import Basic from '../models/basic'
 export const getall = async (req, res) => {
@@ -254,81 +255,236 @@ export const getRevenue = async (req, res) => {
 // thống kê doanh thu theo tháng
 export const getRevenueByMonth = async (req, res) => {
     const year = req.body.year || new Date().getFullYear();
+    let yearArrs = [year - 1, year]
     try {
-        const _year = await Order.find({ year: year - 1 })
-        const order = await Order.find({
-            year: year,
-            statusorder: 3
-        }).exec();
-        // const defaultMonth = {
-        //     jan: [],
-        //     feb: [],
-        //     mar: [],
-        //     apr: [],
-        //     may: [],
-        //     jun: [],
-        //     jul: [],
-        //     aug: [],
-        //     sep: [],
-        //     oct: [],
-        //     nov: [],
-        //     dec: [],
-        // }
-        const data = {
-            // preYear: defaultMonth,
-            // curYear: defaultMonth
-            jan: [],
-            feb: [],
-            mar: [],
-            apr: [],
-            may: [],
-            jun: [],
-            jul: [],
-            aug: [],
-            sep: [],
-            oct: [],
-            nov: [],
-            dec: [],
-        };
-        order.map((item) => {
-            if (item.month === "1") {
-                data.jan.push(item);
+        const getDatarevenueByRoom = async (count, index) => {
+            let i = index;
+            let defaultData = {
+                jan: [],
+                feb: [],
+                mar: [],
+                apr: [],
+                may: [],
+                jun: [],
+                jul: [],
+                aug: [],
+                sep: [],
+                oct: [],
+                nov: [],
+                dec: [],
             }
-            if (item.month === "2") {
-                data.feb.push(item);
+            let defaultData1 = {
+                jan: [],
+                feb: [],
+                mar: [],
+                apr: [],
+                may: [],
+                jun: [],
+                jul: [],
+                aug: [],
+                sep: [],
+                oct: [],
+                nov: [],
+                dec: [],
             }
-            if (item.month === "3") {
-                data.mar.push(item);
+            const data = [
+                defaultData1,
+                defaultData
+            ]
+            if (i <= count) {
+                await Order.find({
+                    year: yearArrs[i],
+                    statusorder: 3
+                })
+                    .then((res) => {
+                        if (res.length > 0) {
+                            res.map((item) => {
+                                if (item.month === "1") {
+                                    data[i].jan.push(item);
+                                }
+                                if (item.month === "2") {
+                                    data[i].feb.push(item);
+                                }
+                                if (item.month === "3") {
+                                    data[i].mar.push(item);
+                                }
+                                if (item.month === "4") {
+                                    data[i].apr.push(item);
+                                }
+                                if (item.month === "5") {
+                                    data[i].may.push(item);
+                                }
+                                if (item.month === "6") {
+                                    data[i].jun.push(item);
+                                }
+                                if (item.month === "7") {
+                                    data[i].jul.push(item);
+                                }
+                                if (item.month === "8") {
+                                    data[i].aug.push(item);
+                                }
+                                if (item.month === "9") {
+                                    data[i].sep.push(item);
+                                }
+                                if (item.month === "10") {
+                                    data[i].oct.push(item);
+                                }
+                                if (item.month === "11") {
+                                    data[i].nov.push(item);
+                                }
+                                if (item.month === "12") {
+                                    data[i].dec.push(item);
+                                }
+                            })
+                        }
+                        else {
+                            data[i] = defaultData
+                        }
+                    })
+                    .then(async () => {
+                        const _revenue = {
+                            [yearArrs[0]]: [],
+                            [yearArrs[1]]: [],
+                        };
+                        if (i === count) {
+                            data.map((item, index) => {
+                                console.log(item)
+                                _revenue[yearArrs[index]].push(
+                                    {
+                                        total: item.jan.reduce((current, pre) => {
+                                            return current + pre.total
+                                        }, 0),
+                                        month: item.jan[0] ? item.jan[0].month : "1",
+                                        year: item.jan[0] ? item.jan[0].year : yearArrs[index]
+                                    }
+                                )
+                                _revenue[yearArrs[index]].push(
+                                    {
+                                        total: item.feb.reduce((current, pre) => {
+                                            return current + pre.total
+                                        }, 0),
+                                        month: item.feb[0] ? item.feb[0].month : "2",
+                                        year: item.feb[0] ? item.feb[0].year : yearArrs[index]
+                                    }
+                                )
+                                _revenue[yearArrs[index]].push(
+                                    {
+                                        total: item.mar.reduce((current, pre) => {
+                                            return current + pre.total
+                                        }, 0),
+                                        month: item.mar[0] ? item.mar[0].month : "3",
+                                        year: item.mar[0] ? item.mar[0].year : yearArrs[index]
+
+                                    }
+                                )
+                                _revenue[yearArrs[index]].push(
+                                    {
+                                        total: item.apr.reduce((current, pre) => {
+                                            return current + pre.total
+                                        }, 0),
+                                        month: item.apr[0] ? item.apr[0].month : "4",
+                                        year: item.apr[0] ? item.apr[0].year : yearArrs[index]
+
+                                    }
+                                )
+                                _revenue[yearArrs[index]].push(
+                                    {
+                                        total: item.may.reduce((current, pre) => {
+                                            return current + pre.total
+                                        }, 0),
+                                        month: item.may[0] ? item.may[0].month : "5",
+                                        year: item.may[0] ? item.may[0].year : yearArrs[index]
+
+
+                                    }
+                                )
+                                _revenue[yearArrs[index]].push(
+                                    {
+                                        total: item.jun.reduce((current, pre) => {
+                                            return current + pre.total
+                                        }, 0),
+                                        month: item.jun[0] ? item.jun[0].month : "6",
+                                        year: item.jun[0] ? item.jun[0].year : yearArrs[index]
+
+
+                                    }
+                                )
+                                _revenue[yearArrs[index]].push(
+                                    {
+                                        total: item.jul.reduce((current, pre) => {
+                                            return current + pre.total
+                                        }, 0),
+                                        month: item.jul[0] ? item.jul[0].month : "7",
+                                        year: item.jul[0] ? item.jul[0].year : yearArrs[index]
+
+
+                                    }
+                                )
+                                _revenue[yearArrs[index]].push(
+                                    {
+                                        total: item.aug.reduce((current, pre) => {
+                                            return current + pre.total
+                                        }, 0),
+                                        month: item.aug[0] ? item.aug[0].month : "8",
+                                        year: item.aug[0] ? item.aug[0].year : yearArrs[index]
+
+
+                                    }
+                                )
+                                _revenue[yearArrs[index]].push(
+                                    {
+                                        total: item.sep.reduce((current, pre) => {
+                                            return current + pre.total
+                                        }, 0),
+                                        month: item.sep[0] ? item.sep[0].month : "9",
+                                        year: item.sep[0] ? item.sep[0].year : yearArrs[index]
+
+
+                                    }
+                                )
+                                _revenue[yearArrs[index]].push(
+                                    {
+                                        total: item.oct.reduce((current, pre) => {
+                                            return current + pre.total
+                                        }, 0),
+                                        month: item.oct[0] ? item.oct[0].month : "10",
+                                        year: item.oct[0] ? item.oct[0].year : yearArrs[index]
+
+                                    }
+                                )
+                                _revenue[yearArrs[index]].push(
+                                    {
+                                        total: item.nov.reduce((current, pre) => {
+                                            return current + pre.total
+                                        }, 0),
+                                        month: item.nov[0] ? item.nov[0].month : "11",
+                                        year: item.nov[0] ? item.nov[0].year : yearArrs[index]
+
+                                    }
+                                )
+                                _revenue[yearArrs[index]].push(
+                                    {
+                                        total: item.dec.reduce((current, pre) => {
+                                            return current + pre.total
+                                        }, 0),
+                                        month: item.dec[0] ? item.dec[0].month : "12",
+                                        year: item.dec[0] ? item.dec[0].year : yearArrs[index]
+
+                                    }
+                                )
+                            })
+                            res.status(200).json(_revenue);
+                        }
+                    })
+                    .then(() => {
+                        if (i < count) {
+                            i++;
+                            getDatarevenueByRoom(count, i);
+                        }
+                    })
             }
-            if (item.month === "4") {
-                data.apr.push(item);
-            }
-            if (item.month === "5") {
-                data.may.push(item);
-            }
-            if (item.month === "6") {
-                data.jun.push(item);
-            }
-            if (item.month === "7") {
-                data.jul.push(item);
-            }
-            if (item.month === "8") {
-                data.aug.push(item);
-            }
-            if (item.month === "9") {
-                data.sep.push(item);
-            }
-            if (item.month === "10") {
-                data.oct.push(item);
-            }
-            if (item.month === "11") {
-                data.nov.push(item);
-            }
-            if (item.month === "12") {
-                data.dec.push(item);
-            }
-        });
-        res.status(200).json(data)
+        }
+        getDatarevenueByRoom(yearArrs.length - 1, 0);
     } catch (error) {
         res.status(404).json(error);
     }
@@ -393,7 +549,7 @@ function areTwoDateTimeRangesOverlapping(incommingDateTimeRange, existingDateTim
     return incommingDateTimeRange.start < existingDateTimeRange.end && incommingDateTimeRange.end > existingDateTimeRange.start
 }
 
-function areManyDateTimeRangesOverlapping(incommingDateTimeRange, existingDateTimeRanges) {
+function arDateTimeRangesOverlapping(incommingDateTimeRange, existingDateTimeRanges) {
     return existingDateTimeRanges.some((existingDateTimeRange) => areTwoDateTimeRangesOverlapping(incommingDateTimeRange, existingDateTimeRange))
 }
 
@@ -421,7 +577,7 @@ export const checkStatusRoom = async (req, res) => {
             });
 
             // trạng thái phòng trống.
-            const status = areManyDateTimeRangesOverlapping({
+            const status = arDateTimeRangesOverlapping({
                 start: new Date(checkin).getTime(),
                 end: new Date(checkout).getTime()
             }, listDateByRoom);
@@ -507,5 +663,17 @@ export const getRoomRevenue = async (req, res) => {
         // res.status(200).json(topRoom);
     } catch (error) {
         res.status(200).json([])
+    }
+}
+
+export const getFreeRoom = (req, res) => {
+    try {
+        // const { checkInDate, checkOutDate } = req.body;
+        const checkInDate = new Date();
+        const checkOutDate = new Date();
+        const roomFree = search(req);
+        res.json(roomFree)
+    } catch (error) {
+        res.status(200).json(error)
     }
 }
