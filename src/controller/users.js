@@ -1,4 +1,6 @@
 import User from "../models/users";
+import Comment from "../models/comments"
+
 import { createHmac } from "crypto";
 
 export const create = async (req, res) => {
@@ -73,6 +75,7 @@ export const update = async (req, res) => {
     });
   }
 };
+
 
 export const changePassword = async (req, res) => {
   try {
