@@ -255,43 +255,44 @@ export const getRevenue = async (req, res) => {
 // thống kê doanh thu theo tháng
 export const getRevenueByMonth = async (req, res) => {
     const year = req.body.year || new Date().getFullYear();
-    let yearArrs = [year - 1, year]
+    let yearArrs = [year - 1, year];
+    let defaultData = {
+        jan: [],
+        feb: [],
+        mar: [],
+        apr: [],
+        may: [],
+        jun: [],
+        jul: [],
+        aug: [],
+        sep: [],
+        oct: [],
+        nov: [],
+        dec: [],
+    }
+    let defaultData1 = {
+        jan: [],
+        feb: [],
+        mar: [],
+        apr: [],
+        dec: [],
+        may: [],
+        jun: [],
+        jul: [],
+        aug: [],
+        nov: [],
+        sep: [],
+        oct: [],
+    }
+    const data = [
+        defaultData1,
+        defaultData
+    ]
     try {
         const getDatarevenueByRoom = async (count, index) => {
             let i = index;
-            let defaultData = {
-                jan: [],
-                feb: [],
-                mar: [],
-                apr: [],
-                may: [],
-                jun: [],
-                jul: [],
-                aug: [],
-                sep: [],
-                oct: [],
-                nov: [],
-                dec: [],
-            }
-            let defaultData1 = {
-                jan: [],
-                feb: [],
-                mar: [],
-                apr: [],
-                may: [],
-                jun: [],
-                jul: [],
-                aug: [],
-                sep: [],
-                oct: [],
-                nov: [],
-                dec: [],
-            }
-            const data = [
-                defaultData1,
-                defaultData
-            ]
             if (i <= count) {
+                console.log(i, "i");
                 await Order.find({
                     year: yearArrs[i],
                     statusorder: 3
@@ -340,15 +341,16 @@ export const getRevenueByMonth = async (req, res) => {
                         else {
                             data[i] = defaultData
                         }
+
+
                     })
                     .then(async () => {
-                        const _revenue = {
-                            [yearArrs[0]]: [],
-                            [yearArrs[1]]: [],
-                        };
                         if (i === count) {
+                            const _revenue = {
+                                [yearArrs[0]]: [],
+                                [yearArrs[1]]: [],
+                            };
                             data.map((item, index) => {
-                                console.log(item)
                                 _revenue[yearArrs[index]].push(
                                     {
                                         total: item.jan.reduce((current, pre) => {
