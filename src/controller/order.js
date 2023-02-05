@@ -3,6 +3,8 @@ import Room from '../models/room'
 import DateBooked from "../models/dateBooked";
 import { json } from 'express';
 import { search } from './rooms';
+import User from '../models/users';
+import order from '../models/order';
 
 // import Basic from '../models/basic'
 export const getall = async (req, res) => {
@@ -292,7 +294,6 @@ export const getRevenueByMonth = async (req, res) => {
         const getDatarevenueByRoom = async (count, index) => {
             let i = index;
             if (i <= count) {
-                console.log(i, "i");
                 await Order.find({
                     year: yearArrs[i],
                     statusorder: 3
@@ -506,7 +507,9 @@ export const getRoomOccupancy = async (req, res) => {
         const year = new Date().getFullYear();
         let result = await Order.aggregate([
             { $match: { statusorder: "3", month: month.toString(), year: year.toString() } },
-            { $group: { _id: "$room", total: { $sum: "$duration" } } }
+            { $group: { _id: "$room", total: { $sum: "$duration" } } },
+            { $sort: { duration: 1 } }
+
         ])
         let topRoom = [];
         const getDatarevenueByRoom = async (count, index) => {
@@ -623,7 +626,8 @@ export const getRoomRevenue = async (req, res) => {
                 await Order.aggregate([
                     // { room: payload }
                     { $match: { room: payload, statusorder: "3", month: month.toString(), year: year.toString() } },
-                    { $group: { _id: "$room", total: { $sum: "$total" } } }
+                    { $group: { _id: "$room", total: { $sum: "$total" } } },
+                    { $sort: { total: 1 } }
                 ])
                     .then((res) => {
                         if (res[0]) {
@@ -677,5 +681,71 @@ export const getFreeRoom = (req, res) => {
         res.json(roomFree)
     } catch (error) {
         res.status(200).json(error)
+    }
+}
+
+export const usersOftenCancel = async (req, res) => {
+    try {
+        const users = await User.find().exec();
+        const month = new Date().getMonth() + 1;
+        let topRoom = [];
+        const getDatarevenueByRoom = async (count, index) => {
+            let i = index;
+            if (i <= count) {
+                const payload = (users[i]._id)
+                await Order.find(
+                    { user: payload, statusorder: "4", month: month }
+                ).exec()
+                    .then((res) => {
+                        console.log(res);
+                        if (res[0]) {
+                            topRoom.push({
+                                name: res[0].name,
+                                total: res.length
+                            });
+                        }
+                    })
+                    .then(async () => {
+                        if (i === count) {
+                            res.status(200).json(topRoom);
+                        }
+                    })
+                    .then(() => {
+                        if (i < count) {
+                            i++;
+                            getDatarevenueByRoom(count, i);
+                        }
+                    })
+            }
+        }
+        getDatarevenueByRoom(users.length - 1, 0);
+    } catch (error) {
+        res.status(200).json(error)
+    }
+}
+
+export const mostUserRevenue = async (req, res) => {
+    const users = await User.find().exec();
+    try {
+        const userRevenue = await Order.aggregate([
+            { $match: { statusorder: "3" } },
+            { $group: { _id: "$user", total: { $sum: "$total" } } }
+        ])
+        let arrsUser = []
+        users.map((item) => {
+            userRevenue.map((i) => {
+                if (JSON.stringify(item._id) == JSON.stringify(i._id)) {
+                    console.log(item, 'item');
+                    console.log(i, "i");
+                    arrsUser.push({
+                        name: item.name,
+                        total: i.total
+                    })
+                }
+            })
+        })
+        res.status(200).json(arrsUser);
+    } catch (error) {
+        res.json(200).status(error)
     }
 }
