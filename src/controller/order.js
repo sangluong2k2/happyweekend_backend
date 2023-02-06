@@ -285,7 +285,7 @@ export const getRevenue = async (req, res) => {
                 break;
         }
     }
-    getDateRange("QUATER", month, year);
+    getDateRange(type, month, year);
     try {
         const order = await Order.find(payload).exec();
         res.status(200).json(order)
@@ -576,8 +576,12 @@ export const getRoomOccupancy = async (req, res) => {
                     })
             }
         }
-        getDatarevenueByRoom(result.length - 1, 0);
-        // res.json(result)
+        if (result.length > 0) {
+            getDatarevenueByRoom(result.length - 1, 0);
+        }
+        else {
+            res.json([])
+        }
     } catch (error) {
         res.status(400).json(error)
     }
