@@ -87,7 +87,7 @@ export const sendMail = async (req, res) => {
         },
     });
     await transporter.sendMail({
-        from: "HappyWeekendHotel", // sender address
+        from: '"HappyWeekendHotel" <ngankien1111@gmail.com>', // sender address
         to: `${email}`, // list of receivers
         subject: "HappyWeekendHootel", // Subject line
         text: `${name} đã đặt phòng ${room} thành công trong khoảng thời gian ${checkins} tới ngày ${checkouts} với giá tiền ${total}VNĐ!`, // plain text body
