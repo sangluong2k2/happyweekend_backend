@@ -296,7 +296,7 @@ export const getRevenue = async (req, res) => {
 
 // thống kê doanh thu theo tháng
 export const getRevenueByMonth = async (req, res) => {
-    const year = req.body.year || new Date().getFullYear();
+    const year = new Date().getFullYear();
     let yearArrs = [year - 1, year];
     let defaultData = {
         jan: [],
@@ -380,13 +380,12 @@ export const getRevenueByMonth = async (req, res) => {
                             })
                         }
                         else {
-                            data[i] = defaultData
+                            // data[i] = defaultData
                         }
-
-
                     })
                     .then(async () => {
                         if (i === count) {
+                            console.log(data);
                             const _revenue = {
                                 [yearArrs[0]]: [],
                                 [yearArrs[1]]: [],
