@@ -537,7 +537,7 @@ export const getRevenueByMonth = async (req, res) => {
 //công suất sử dụng phòng
 export const getRoomOccupancy = async (req, res) => {
     try {
-        const month = new Date().getMonth() + 1;
+        const month = req.body.month || new Date().getMonth() + 1;
         const year = new Date().getFullYear();
         let result = await Order.aggregate([
             { $match: { statusorder: "3", month: month.toString(), year: year.toString() } },
@@ -644,7 +644,7 @@ export const getRoomOrder = async (req, res) => {
 
 export const getRoomRevenue = async (req, res) => {
     try {
-        const month = new Date().getMonth() + 1;
+        const month = req.body.month || new Date().getMonth() + 1;
         const year = new Date().getFullYear();
         const room = await Room.find().exec();
         let roomId = [];
@@ -721,14 +721,14 @@ export const getFreeRoom = (req, res) => {
 export const usersOftenCancel = async (req, res) => {
     try {
         const users = await User.find().exec();
-        const month = new Date().getMonth() + 1;
+        const month = req.body.month || new Date().getMonth() + 1;
         let topRoom = [];
         const getDatarevenueByRoom = async (count, index) => {
             let i = index;
             if (i <= count) {
                 const payload = (users[i]._id)
                 await Order.find(
-                    { user: payload, statusorder: "4", month: month }
+                    { user: payload, statusorder: "4", month: month.toString() }
                 ).exec()
                     .then((res) => {
                         console.log(res);
@@ -760,17 +760,16 @@ export const usersOftenCancel = async (req, res) => {
 
 export const mostUserRevenue = async (req, res) => {
     const users = await User.find().exec();
+    const month = req.body.month || new Date().getMonth() + 1;
     try {
         const userRevenue = await Order.aggregate([
-            { $match: { statusorder: "3" } },
+            { $match: { statusorder: "3", month: month.toString() } },
             { $group: { _id: "$user", total: { $sum: "$total" } } }
         ])
         let arrsUser = []
         users.map((item) => {
             userRevenue.map((i) => {
                 if (JSON.stringify(item._id) == JSON.stringify(i._id)) {
-                    console.log(item, 'item');
-                    console.log(i, "i");
                     arrsUser.push({
                         name: item.name,
                         total: i.total
