@@ -234,24 +234,64 @@ export const checkUserBookRoom = async (req, res) => {
 
 // thống kê doanh thu theo năm hoặc tháng 
 export const getRevenue = async (req, res) => {
-    const year = req.body.year || new Date().getFullYear();
-    const month = req.body.month || new Date().getMonth() + 1;
+    const { type, year, month } = req.body;
+    let payload = {};
+    const getDateRange = (type, month, year) => {
+        switch (type) {
+            case "MONTH":
+                payload = {
+                    month: month,
+                    statusorder: "3"
+                }
+                break;
+            case "YEAR":
+                payload = {
+                    year: year,
+                    month: month,
+                    statusorder: "3"
+                }
+                break;
+            case "QUATER":
+                if (month < 4) {
+                    payload = {
+                        month: ["1", "2", "3"],
+                        year: year,
+                        statusorder: "3"
+                    }
+                }
+                if (month < 7 && month > 3) {
+                    payload = {
+                        month: ["4", "5", "6"],
+                        year: year,
+                        statusorder: "3"
+                    }
+                }
+                if (month < 10 && month > 6) {
+                    payload = {
+                        month: ["7", "8", "9"],
+                        year: year,
+                        statusorder: "3"
+                    }
+                }
+                if (month < 13 && month > 9) {
+                    payload = {
+                        month: ["10", "11", "12"],
+                        year: year,
+                        statusorder: "3"
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    getDateRange("QUATER", month, year);
     try {
-        const order = await Order.find({
-            month: month,
-            year: year,
-            statusorder: 3
-        }).exec();
+        const order = await Order.find(payload).exec();
         res.status(200).json(order)
     } catch (error) {
         res.status(404).json(error);
     }
-    // const _order = [];
-    // order.map((item) => {
-    //     if (new Date(item.checkins).getMonth() == month && new Date(item.checkins).getFullYear() == year) {
-    //         _order.push(item)
-    //     }
-    // })
 }
 
 // thống kê doanh thu theo tháng
@@ -491,12 +531,6 @@ export const getRevenueByMonth = async (req, res) => {
     } catch (error) {
         res.status(404).json(error);
     }
-    // const _order = [];
-    // order.map((item) => {
-    //     if (new Date(item.checkins).getMonth() == month && new Date(item.checkins).getFullYear() == year) {
-    //         _order.push(item)
-    //     }
-    // })
 
 }
 
