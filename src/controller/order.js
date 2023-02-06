@@ -240,14 +240,15 @@ export const getRevenue = async (req, res) => {
         switch (type) {
             case "MONTH":
                 payload = {
-                    month: month,
-                    statusorder: "3"
+                    month: month.toString(),
+                    statusorder: "3",
+                    year: year.toString(),
                 }
                 break;
             case "YEAR":
                 payload = {
-                    year: year,
-                    month: month,
+                    year: year.toString(),
+                    month: month.toString(),
                     statusorder: "3"
                 }
                 break;
@@ -255,28 +256,28 @@ export const getRevenue = async (req, res) => {
                 if (month < 4) {
                     payload = {
                         month: ["1", "2", "3"],
-                        year: year,
+                        year: year.toString(),
                         statusorder: "3"
                     }
                 }
                 if (month < 7 && month > 3) {
                     payload = {
                         month: ["4", "5", "6"],
-                        year: year,
+                        year: year.toString(),
                         statusorder: "3"
                     }
                 }
                 if (month < 10 && month > 6) {
                     payload = {
                         month: ["7", "8", "9"],
-                        year: year,
+                        year: year.toString(),
                         statusorder: "3"
                     }
                 }
                 if (month < 13 && month > 9) {
                     payload = {
                         month: ["10", "11", "12"],
-                        year: year,
+                        year: year.toString(),
                         statusorder: "3"
                     }
                 }
