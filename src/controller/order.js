@@ -236,6 +236,7 @@ export const checkUserBookRoom = async (req, res) => {
 export const getRevenue = async (req, res) => {
     const { type, year, month } = req.body;
     let payload = {};
+    console.log(type, year, month);
     const getDateRange = (type, month, year) => {
         switch (type) {
             case "MONTH":
@@ -386,7 +387,6 @@ export const getRevenueByMonth = async (req, res) => {
                     })
                     .then(async () => {
                         if (i === count) {
-                            console.log(data);
                             const _revenue = {
                                 [yearArrs[0]]: [],
                                 [yearArrs[1]]: [],
@@ -726,16 +726,16 @@ export const usersOftenCancel = async (req, res) => {
     try {
         const users = await User.find().exec();
         const month = req.body.month || new Date().getMonth() + 1;
+    const year = new Date().getFullYear();
         let topRoom = [];
         const getDatarevenueByRoom = async (count, index) => {
             let i = index;
             if (i <= count) {
                 const payload = (users[i]._id)
                 await Order.find(
-                    { user: payload, statusorder: "4", month: month.toString() }
+                    { user: payload, statusorder: "4", month: month.toString(), year: year.toString()  }
                 ).exec()
                     .then((res) => {
-                        console.log(res);
                         if (res[0]) {
                             topRoom.push({
                                 name: res[0].name,
@@ -765,9 +765,10 @@ export const usersOftenCancel = async (req, res) => {
 export const mostUserRevenue = async (req, res) => {
     const users = await User.find().exec();
     const month = req.body.month || new Date().getMonth() + 1;
+    const year = new Date().getFullYear();
     try {
         const userRevenue = await Order.aggregate([
-            { $match: { statusorder: "3", month: month.toString() } },
+            { $match: { statusorder: "3", month: month.toString(), year: year.toString() } },
             { $group: { _id: "$user", total: { $sum: "$total" } } }
         ])
         let arrsUser = []
