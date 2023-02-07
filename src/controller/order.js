@@ -236,18 +236,20 @@ export const checkUserBookRoom = async (req, res) => {
 export const getRevenue = async (req, res) => {
     const { type, year, month } = req.body;
     let payload = {};
+    console.log(type, year, month);
     const getDateRange = (type, month, year) => {
         switch (type) {
             case "MONTH":
                 payload = {
-                    month: month,
-                    statusorder: "3"
+                    month: month.toString(),
+                    statusorder: "3",
+                    year: year.toString(),
                 }
                 break;
             case "YEAR":
                 payload = {
-                    year: year,
-                    month: month,
+                    year: year.toString(),
+                    month: month.toString(),
                     statusorder: "3"
                 }
                 break;
@@ -255,28 +257,28 @@ export const getRevenue = async (req, res) => {
                 if (month < 4) {
                     payload = {
                         month: ["1", "2", "3"],
-                        year: year,
+                        year: year.toString(),
                         statusorder: "3"
                     }
                 }
                 if (month < 7 && month > 3) {
                     payload = {
                         month: ["4", "5", "6"],
-                        year: year,
+                        year: year.toString(),
                         statusorder: "3"
                     }
                 }
                 if (month < 10 && month > 6) {
                     payload = {
                         month: ["7", "8", "9"],
-                        year: year,
+                        year: year.toString(),
                         statusorder: "3"
                     }
                 }
                 if (month < 13 && month > 9) {
                     payload = {
                         month: ["10", "11", "12"],
-                        year: year,
+                        year: year.toString(),
                         statusorder: "3"
                     }
                 }
@@ -385,7 +387,6 @@ export const getRevenueByMonth = async (req, res) => {
                     })
                     .then(async () => {
                         if (i === count) {
-                            console.log(data);
                             const _revenue = {
                                 [yearArrs[0]]: [],
                                 [yearArrs[1]]: [],
@@ -725,16 +726,16 @@ export const usersOftenCancel = async (req, res) => {
     try {
         const users = await User.find().exec();
         const month = req.body.month || new Date().getMonth() + 1;
+    const year = new Date().getFullYear();
         let topRoom = [];
         const getDatarevenueByRoom = async (count, index) => {
             let i = index;
             if (i <= count) {
                 const payload = (users[i]._id)
                 await Order.find(
-                    { user: payload, statusorder: "4", month: month.toString() }
+                    { user: payload, statusorder: "4", month: month.toString(), year: year.toString()  }
                 ).exec()
                     .then((res) => {
-                        console.log(res);
                         if (res[0]) {
                             topRoom.push({
                                 name: res[0].name,
@@ -764,9 +765,10 @@ export const usersOftenCancel = async (req, res) => {
 export const mostUserRevenue = async (req, res) => {
     const users = await User.find().exec();
     const month = req.body.month || new Date().getMonth() + 1;
+    const year = new Date().getFullYear();
     try {
         const userRevenue = await Order.aggregate([
-            { $match: { statusorder: "3", month: month.toString() } },
+            { $match: { statusorder: "3", month: month.toString(), year: year.toString() } },
             { $group: { _id: "$user", total: { $sum: "$total" } } }
         ])
         let arrsUser = []
